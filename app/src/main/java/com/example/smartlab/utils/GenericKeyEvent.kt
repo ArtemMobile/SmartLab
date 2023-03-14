@@ -10,12 +10,12 @@ import com.example.smartlab.R
 class GenericKeyEvent(private val currentView: EditText, private val previousView: EditText?) :
     View.OnKeyListener {
     override fun onKey(p0: View?, keyCode: Int, event: KeyEvent?): Boolean {
-//        if (event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.et1 && currentView.text.isEmpty()) {
-//            //If current is empty then previous EditText's number will also be deleted
-//            previousView!!.text = null
-//            previousView.requestFocus()
-//            return true
-//        }
+        if (event!!.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.id != R.id.et1 && currentView.text.isEmpty()) {
+            //If current is empty then previous EditText's number will also be deleted
+            previousView!!.text = null
+            previousView.requestFocus()
+            return true
+        }
         return false
     }
 }
@@ -25,9 +25,9 @@ class GenericTextWatcher(private val currentView: View, private val nextView: Vi
     override fun afterTextChanged(editable: Editable) { // TODO Auto-generated method stub
         val text = editable.toString()
         when (currentView.id) {
-//            R.id.et1 -> if (text.length == 1) nextView!!.requestFocus()
-//            R.id.et2 -> if (text.length == 1) nextView!!.requestFocus()
-//            R.id.et3 -> if (text.length == 1) nextView!!.requestFocus()
+            R.id.et1 -> if (text.length == 1) nextView!!.requestFocus()
+            R.id.et2 -> if (text.length == 1) nextView!!.requestFocus()
+            R.id.et3 -> if (text.length == 1) nextView!!.requestFocus()
             //You can use EditText4 same as above to hide the keyboard
         }
     }

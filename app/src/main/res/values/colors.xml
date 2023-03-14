@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="small_editor_background">#F5F5F9</color>
     <color name="small_editor_stroke">#EBEBEB</color>
+    <color name="blue_button">#1A6FEE</color>
+    <color name="inactive_button">#C9D4FB</color>
 </resources>
