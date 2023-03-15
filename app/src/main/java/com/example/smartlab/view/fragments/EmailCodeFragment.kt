@@ -46,7 +46,8 @@ class EmailCodeFragment : Fragment() {
 
     private fun setUpEditors() {
         with(binding) {
-            et1.requestFocus()
+            //et1.requestFocus()
+
             et1.addTextChangedListener(GenericTextWatcher(et1, et2))
             et2.addTextChangedListener(GenericTextWatcher(et2, et3))
             et3.addTextChangedListener(GenericTextWatcher(et3, et4))
@@ -64,9 +65,12 @@ class EmailCodeFragment : Fragment() {
                     if (s!!.isNotBlank()) {
                         // sending "request"
                         sendRequest()
+                        //et4.clearFocus()
                         // locking attempt to request when 4-th digit is chosen
                         requestingIsLocked = true
                         findNavController().navigate(R.id.action_emailCodeFragment_to_passwordFragment)
+                        timer.cancel()
+
                     }
                 }
 
@@ -81,23 +85,7 @@ class EmailCodeFragment : Fragment() {
     }
 
     private fun initCountDownTimer() {
-        object : CountDownTimer(60000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.tvCountDown.text =
-                    "Отправить код повторно можно\nбудет через ${millisUntilFinished / 1000} секунд"
-            }
-
-            override fun onFinish() {
-                // start timer one more time on finish
-                this.start()
-                // unlocking requesting
-                requestingIsLocked = false
-                // sending "request"
-                sendRequest()
-                // locking again
-                requestingIsLocked = true
-            }
-        }.start()
+        timer.start()
     }
 
     private fun sendRequest() {
@@ -121,6 +109,24 @@ class EmailCodeFragment : Fragment() {
         with(binding) {
             return et1.text.toString().isNotEmpty() && et2.text.toString().isNotEmpty()
                     && et3.text.toString().isNotEmpty() && et4.text.toString().isNotEmpty()
+        }
+    }
+
+    private val timer = object : CountDownTimer(10000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            binding.tvCountDown.text =
+                "Отправить код повторно можно\nбудет через ${millisUntilFinished / 1000} секунд"
+        }
+
+        override fun onFinish() {
+            // start timer one more time on finish
+            this.start()
+            // unlocking requesting
+            requestingIsLocked = false
+            // sending "request"
+            sendRequest()
+            // locking again
+            requestingIsLocked = true
         }
     }
 }
