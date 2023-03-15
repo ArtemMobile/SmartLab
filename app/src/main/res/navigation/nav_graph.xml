@@ -69,5 +69,13 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+        <action
+            android:id="@+id/action_emailCodeFragment_to_passwordFragment"
+            app:destination="@id/passwordFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/passwordFragment"
+        android:name="com.example.smartlab.view.fragments.PasswordFragment"
+        android:label="fragment_password"
+        tools:layout="@layout/fragment_password" />
 </navigation>

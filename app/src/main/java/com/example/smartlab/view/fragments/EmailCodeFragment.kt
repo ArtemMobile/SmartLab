@@ -28,7 +28,6 @@ class EmailCodeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
         return binding.root
     }
 
@@ -63,8 +62,11 @@ class EmailCodeFragment : Fragment() {
                 @SuppressLint("UseCompatLoadingForDrawables")
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (s!!.isNotBlank()) {
+                        // sending "request"
                         sendRequest()
+                        // locking attempt to request when 4-th digit is chosen
                         requestingIsLocked = true
+                        findNavController().navigate(R.id.action_emailCodeFragment_to_passwordFragment)
                     }
                 }
 
@@ -86,9 +88,13 @@ class EmailCodeFragment : Fragment() {
             }
 
             override fun onFinish() {
+                // start timer one more time on finish
                 this.start()
+                // unlocking requesting
                 requestingIsLocked = false
+                // sending "request"
                 sendRequest()
+                // locking again
                 requestingIsLocked = true
             }
         }.start()
@@ -99,20 +105,22 @@ class EmailCodeFragment : Fragment() {
             with(binding) {
                 if (editorsNotBlank()) {
                     val password = "${et1.text}${et2.text}${et3.text}${et4.text}"
+                    // "requesting" api with code, navigating next
                     Toast.makeText(requireContext(),
                         "requesting api with code:$password",
                         Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "not filled", Toast.LENGTH_SHORT).show()
                 }
+//                } else {
+//                    Toast.makeText(requireContext(), "not filled", Toast.LENGTH_SHORT).show()
+//                }
             }
         }
     }
 
     private fun editorsNotBlank(): Boolean {
         with(binding) {
-            return et1.text.toString().isNotBlank() && et2.text.toString().isNotBlank()
-                    && et3.text.toString().isNotBlank() && et4.text.toString().isNotBlank()
+            return et1.text.toString().isNotEmpty() && et2.text.toString().isNotEmpty()
+                    && et3.text.toString().isNotEmpty() && et4.text.toString().isNotEmpty()
         }
     }
 }
