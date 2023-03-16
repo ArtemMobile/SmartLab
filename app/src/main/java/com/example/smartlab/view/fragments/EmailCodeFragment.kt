@@ -1,28 +1,34 @@
 package com.example.smartlab.view.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentEmailCodeBinding
 import com.example.smartlab.utils.GenericKeyEvent
 import com.example.smartlab.utils.GenericTextWatcher
+import com.example.smartlab.utils.SaveStatus
+import com.example.smartlab.viewmodel.EmailCodeViewModel
 
 class EmailCodeFragment : Fragment() {
 
-    private val binding: FragmentEmailCodeBinding by lazy {
-        FragmentEmailCodeBinding.inflate(layoutInflater)
-    }
-
+    private val binding: FragmentEmailCodeBinding by lazy { FragmentEmailCodeBinding.inflate(layoutInflater) }
+    private val viewModel: EmailCodeViewModel by viewModels()
     private var requestingIsLocked = false
+    private val TAG = this::class.simpleName
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,22 +42,33 @@ class EmailCodeFragment : Fragment() {
         setUpEditors()
         initCountDownTimer()
         applyClicks()
+        viewModel.getEmail()
+        setObservers()
     }
 
     private fun applyClicks() {
-        binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_emailCodeFragment_to_loginFragment)
+        binding.btnBack.setOnClickListener { findNavController().popBackStack() }
+    }
+
+    private fun setObservers() {
+        viewModel.signInStatus.observe(viewLifecycleOwner) {
+            when(it){
+                SaveStatus.SUCCESS ->  {findNavController().navigate(R.id.action_emailCodeFragment_to_passwordFragment)}
+                else -> {sendRequest()}
+            }
+            Log.d(TAG, "setObservers: signInStatus - $it ")
+        }
+        viewModel.error.observe(viewLifecycleOwner){
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setUpEditors() {
         with(binding) {
-            //et1.requestFocus()
-
-            et1.addTextChangedListener(GenericTextWatcher(et1, et2))
-            et2.addTextChangedListener(GenericTextWatcher(et2, et3))
-            et3.addTextChangedListener(GenericTextWatcher(et3, et4))
-            et4.addTextChangedListener(object : TextWatcher {
+            etCode1.addTextChangedListener(GenericTextWatcher(etCode1, etCode2))
+            etCode2.addTextChangedListener(GenericTextWatcher(etCode2, etCode3))
+            etCode3.addTextChangedListener(GenericTextWatcher(etCode3, etCode4))
+            etCode4.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -60,27 +77,27 @@ class EmailCodeFragment : Fragment() {
                 ) {
                 }
 
-                @SuppressLint("UseCompatLoadingForDrawables")
+                @SuppressLint("UseCompatLoadingForDrawables", "ServiceCast")
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (s!!.isNotBlank()) {
-                        // sending "request"
                         sendRequest()
-                        //et4.clearFocus()
+                        etCode4.clearFocus()
+                        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        view?.let {
+                            imm.hideSoftInputFromWindow(it.windowToken, 0)
+                        }
                         // locking attempt to request when 4-th digit is chosen
                         requestingIsLocked = true
-                        findNavController().navigate(R.id.action_emailCodeFragment_to_passwordFragment)
-                        timer.cancel()
-
                     }
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
             })
 
-            et1.setOnKeyListener(GenericKeyEvent(et1, null))
-            et2.setOnKeyListener(GenericKeyEvent(et2, et1))
-            et3.setOnKeyListener(GenericKeyEvent(et3, et2))
-            et4.setOnKeyListener(GenericKeyEvent(et4, et3))
+            etCode1.setOnKeyListener(GenericKeyEvent(etCode1, null))
+            etCode2.setOnKeyListener(GenericKeyEvent(etCode2, etCode1))
+            etCode3.setOnKeyListener(GenericKeyEvent(etCode3, etCode2))
+            etCode4.setOnKeyListener(GenericKeyEvent(etCode4, etCode3))
         }
     }
 
@@ -92,27 +109,21 @@ class EmailCodeFragment : Fragment() {
         if (!requestingIsLocked) {
             with(binding) {
                 if (editorsNotBlank()) {
-                    val password = "${et1.text}${et2.text}${et3.text}${et4.text}"
-                    // "requesting" api with code, navigating next
-                    Toast.makeText(requireContext(),
-                        "requesting api with code:$password",
-                        Toast.LENGTH_SHORT).show()
+                    val password = "${etCode1.text}${etCode2.text}${etCode3.text}${etCode4.text}"
+                    viewModel.signIn(viewModel.email.value ?: "", password)
                 }
-//                } else {
-//                    Toast.makeText(requireContext(), "not filled", Toast.LENGTH_SHORT).show()
-//                }
             }
         }
     }
 
     private fun editorsNotBlank(): Boolean {
         with(binding) {
-            return et1.text.toString().isNotEmpty() && et2.text.toString().isNotEmpty()
-                    && et3.text.toString().isNotEmpty() && et4.text.toString().isNotEmpty()
+            return etCode1.text.toString().isNotEmpty() && etCode2.text.toString().isNotEmpty()
+                    && etCode3.text.toString().isNotEmpty() && etCode4.text.toString().isNotEmpty()
         }
     }
 
-    private val timer = object : CountDownTimer(10000, 1000) {
+    private val timer = object : CountDownTimer(30000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             binding.tvCountDown.text =
                 "Отправить код повторно можно\nбудет через ${millisUntilFinished / 1000} секунд"
@@ -128,5 +139,10 @@ class EmailCodeFragment : Fragment() {
             // locking again
             requestingIsLocked = true
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.cancel()
     }
 }

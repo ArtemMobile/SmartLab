@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.smartlab.R
 import com.example.smartlab.model.dto.OnboardingItem
-import com.example.smartlab.utils.IS_ONBOARDING_PASSED
+import com.example.smartlab.utils.DataStore
 import com.example.smartlab.utils.dataStore
 import kotlinx.coroutines.launch
 
@@ -29,11 +29,11 @@ class OnboardingViewModel(private val app: Application): AndroidViewModel(app) {
 
     var onboardingPassedCallCount = 0
 
-    fun setOnboardingPassed() {
+    private fun setOnboardingPassed() {
         onboardingPassedCallCount++
         viewModelScope.launch {
             app.dataStore.edit {
-                it[IS_ONBOARDING_PASSED] = true
+                it[DataStore.IS_ONBOARDING_PASSED] = true
             }
         }
     }
