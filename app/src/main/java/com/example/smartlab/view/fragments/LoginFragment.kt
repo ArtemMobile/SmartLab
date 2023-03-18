@@ -12,16 +12,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentLoginBinding
+import com.example.smartlab.utils.SendCodeStatus
 import com.example.smartlab.utils.Utils
 import com.example.smartlab.viewmodel.LoginViewModel
-import com.example.smartlab.viewmodel.SendCodeStatus
-import java.util.regex.Pattern
+import com.example.smartlab.viewmodel.ProfileViewModel
 
 class LoginFragment : Fragment() {
 
     private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
     private val viewModel: LoginViewModel by viewModels()
     private val TAG = this::class.simpleName
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

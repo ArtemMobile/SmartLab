@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.ButtonBarLayout
+import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentPasswordBinding
 
@@ -21,7 +24,6 @@ class PasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-
         return binding.root
     }
 
@@ -32,39 +34,14 @@ class PasswordFragment : Fragment() {
 
     private fun applyClicks() {
         with(binding) {
-            btn0.setOnClickListener {
-                setPassword(it)
+            grid.iterator().forEach { view ->
+                if(view is AppCompatButton){
+                    (view).setOnClickListener {
+                        setPassword(it)
+                    }
+                }
             }
-            btn1.setOnClickListener {
-                setPassword(it)
-            }
-            btn2.setOnClickListener {
-                setPassword(it)
-            }
-            btn3.setOnClickListener {
-                setPassword(it)
-            }
-            btn4.setOnClickListener {
-                setPassword(it)
-            }
-            btn5.setOnClickListener {
-                setPassword(it)
-            }
-            btn6.setOnClickListener {
-                setPassword(it)
-            }
-            btn7.setOnClickListener {
-                setPassword(it)
-            }
-            btn8.setOnClickListener {
-                setPassword(it)
-            }
-            btn9.setOnClickListener {
-                setPassword(it)
-            }
-            btnClear.setOnClickListener {
-                clearOneDigit()
-            }
+            btnClear.setOnClickListener { clearOneDigit() }
         }
     }
 
@@ -77,6 +54,7 @@ class PasswordFragment : Fragment() {
         }
         if(password.length == 4){
             // navigating next here + saving password securely
+            findNavController().navigate(R.id.action_passwordFragment_to_patientCardFragment)
             binding.tvPassword.text = "password created: $password"
         }
     }

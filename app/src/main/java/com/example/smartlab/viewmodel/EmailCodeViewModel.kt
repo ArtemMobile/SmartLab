@@ -6,10 +6,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.smartlab.utils.SaveStatus
 import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.model.api.responseModels.ErrorResponse
 import com.example.smartlab.utils.DataStore
-import com.example.smartlab.utils.SaveStatus
+import com.example.smartlab.utils.SendCodeStatus
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,9 @@ class EmailCodeViewModel(private val app: Application) : AndroidViewModel(app)  
 
     private val _error: MutableLiveData<String> = MutableLiveData()
     val error: LiveData<String> = _error
+
+    private val _sendCodeStatus: MutableLiveData<SendCodeStatus> = MutableLiveData()
+    val sendCodeStatus: LiveData<SendCodeStatus> = _sendCodeStatus
 
     fun signIn(email: String, code: String) {
         viewModelScope.launch {
@@ -48,6 +52,21 @@ class EmailCodeViewModel(private val app: Application) : AndroidViewModel(app)  
             DataStore.getEmail(app).collect {
                 _email.value = it
             }
+        }
+    }
+
+    fun sendCode(email: String) {
+        viewModelScope.launch {
+            when(SmartLabClient.retrofit.sendCode(email).code()) {
+                200 -> _sendCodeStatus.value = SendCodeStatus.SUCCESS
+                422 -> _sendCodeStatus.value = SendCodeStatus.FAIL
+            }
+        }
+    }
+
+    fun clearSignInStatus(){
+        viewModelScope.launch {
+            _signInStatus.value = SaveStatus.NOTHING
         }
     }
 

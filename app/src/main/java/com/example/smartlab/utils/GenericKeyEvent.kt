@@ -20,32 +20,23 @@ class GenericKeyEvent(private val currentView: EditText, private val previousVie
     }
 }
 
-class GenericTextWatcher(private val currentView: View, private val nextView: View?) :
+class GenericTextWatcher(private val currentView: View, private val nextView: View?,  private val onLastEditTextFilled: () -> Unit = {}) :
     TextWatcher {
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
     override fun afterTextChanged(editable: Editable) { // TODO Auto-generated method stub
         val text = editable.toString()
         when (currentView.id) {
             R.id.etCode1 -> if (text.length == 1) nextView!!.requestFocus()
             R.id.etCode2 -> if (text.length == 1) nextView!!.requestFocus()
             R.id.etCode3 -> if (text.length == 1) nextView!!.requestFocus()
+            R.id.etCode4 -> if (text.length == 1) onLastEditTextFilled()
             //You can use EditText4 same as above to hide the keyboard
         }
     }
 
-    override fun beforeTextChanged(
-        arg0: CharSequence,
-        arg1: Int,
-        arg2: Int,
-        arg3: Int,
-    ) { // TODO Auto-generated method stub
-    }
 
-    override fun onTextChanged(
-        arg0: CharSequence,
-        arg1: Int,
-        arg2: Int,
-        arg3: Int,
-    ) { // TODO Auto-generated method stub
-    }
 
 }

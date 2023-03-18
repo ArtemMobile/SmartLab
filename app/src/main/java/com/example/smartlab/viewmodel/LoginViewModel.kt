@@ -5,9 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.smartlab.utils.SendCodeStatus
+import com.example.smartlab.utils.SaveStatus
 import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.utils.DataStore
-import com.example.smartlab.utils.SaveStatus
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val app: Application): AndroidViewModel(app) {
@@ -40,6 +41,3 @@ class LoginViewModel(private val app: Application): AndroidViewModel(app) {
     }
 }
 
-enum class SendCodeStatus {
-    SUCCESS, FAIL, NOTHING
-}

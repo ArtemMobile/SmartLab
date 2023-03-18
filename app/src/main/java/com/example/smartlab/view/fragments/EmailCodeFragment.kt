@@ -1,13 +1,8 @@
 package com.example.smartlab.view.fragments
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,10 +20,24 @@ import com.example.smartlab.viewmodel.EmailCodeViewModel
 
 class EmailCodeFragment : Fragment() {
 
-    private val binding: FragmentEmailCodeBinding by lazy { FragmentEmailCodeBinding.inflate(layoutInflater) }
+    private val binding: FragmentEmailCodeBinding by lazy {
+        FragmentEmailCodeBinding.inflate(layoutInflater)
+    }
     private val viewModel: EmailCodeViewModel by viewModels()
-    private var requestingIsLocked = false
-    private val TAG = this::class.simpleName
+
+
+    private val timer = object : CountDownTimer(60000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            binding.tvCountDown.text =
+                "Отправить код повторно можно\nбудет через ${millisUntilFinished / 1000} секунд"
+        }
+
+        override fun onFinish() {
+            this.cancel()
+            this.start()
+            viewModel.sendCode(viewModel.email.value ?: "")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +49,7 @@ class EmailCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpEditors()
-        initCountDownTimer()
+        timer.start()
         applyClicks()
         viewModel.getEmail()
         setObservers()
@@ -52,13 +61,13 @@ class EmailCodeFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.signInStatus.observe(viewLifecycleOwner) {
-            when(it){
-                SaveStatus.SUCCESS ->  {findNavController().navigate(R.id.action_emailCodeFragment_to_passwordFragment)}
-                else -> {sendRequest()}
+            if (it == SaveStatus.SUCCESS) {
+                timer.cancel()
+                viewModel.clearSignInStatus()
+                findNavController().navigate(R.id.action_emailCodeFragment_to_passwordFragment)
             }
-            Log.d(TAG, "setObservers: signInStatus - $it ")
         }
-        viewModel.error.observe(viewLifecycleOwner){
+        viewModel.error.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
     }
@@ -68,31 +77,20 @@ class EmailCodeFragment : Fragment() {
             etCode1.addTextChangedListener(GenericTextWatcher(etCode1, etCode2))
             etCode2.addTextChangedListener(GenericTextWatcher(etCode2, etCode3))
             etCode3.addTextChangedListener(GenericTextWatcher(etCode3, etCode4))
-            etCode4.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int,
-                ) {
-                }
-
-                @SuppressLint("UseCompatLoadingForDrawables", "ServiceCast")
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s!!.isNotBlank()) {
-                        sendRequest()
-                        etCode4.clearFocus()
-                        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        view?.let {
-                            imm.hideSoftInputFromWindow(it.windowToken, 0)
-                        }
-                        // locking attempt to request when 4-th digit is chosen
-                        requestingIsLocked = true
+            etCode4.addTextChangedListener(GenericTextWatcher(
+                etCode4,
+                null,
+                onLastEditTextFilled = {
+                    etCode4.clearFocus()
+                    sendRequest()
+                    val imm =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    view?.let {
+                        imm.hideSoftInputFromWindow(it.windowToken, 0)
                     }
-                }
 
-                override fun afterTextChanged(s: Editable?) {}
-            })
+                }
+            ))
 
             etCode1.setOnKeyListener(GenericKeyEvent(etCode1, null))
             etCode2.setOnKeyListener(GenericKeyEvent(etCode2, etCode1))
@@ -101,48 +99,10 @@ class EmailCodeFragment : Fragment() {
         }
     }
 
-    private fun initCountDownTimer() {
-        timer.start()
-    }
-
     private fun sendRequest() {
-        if (!requestingIsLocked) {
-            with(binding) {
-                if (editorsNotBlank()) {
-                    val password = "${etCode1.text}${etCode2.text}${etCode3.text}${etCode4.text}"
-                    viewModel.signIn(viewModel.email.value ?: "", password)
-                }
-            }
-        }
-    }
-
-    private fun editorsNotBlank(): Boolean {
         with(binding) {
-            return etCode1.text.toString().isNotEmpty() && etCode2.text.toString().isNotEmpty()
-                    && etCode3.text.toString().isNotEmpty() && etCode4.text.toString().isNotEmpty()
+            val password = "${etCode1.text}${etCode2.text}${etCode3.text}${etCode4.text}"
+            viewModel.signIn(viewModel.email.value ?: "", password)
         }
-    }
-
-    private val timer = object : CountDownTimer(30000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-            binding.tvCountDown.text =
-                "Отправить код повторно можно\nбудет через ${millisUntilFinished / 1000} секунд"
-        }
-
-        override fun onFinish() {
-            // start timer one more time on finish
-            this.start()
-            // unlocking requesting
-            requestingIsLocked = false
-            // sending "request"
-            sendRequest()
-            // locking again
-            requestingIsLocked = true
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        timer.cancel()
     }
 }

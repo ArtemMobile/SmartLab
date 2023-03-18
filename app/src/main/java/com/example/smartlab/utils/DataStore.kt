@@ -19,7 +19,6 @@ object DataStore{
                 emit(SaveStatus.SUCCESS)
             }
         }
-
     }
 
     fun getToken(context: Context): Flow<String> {
@@ -46,6 +45,4 @@ object DataStore{
     }
 }
 
-enum class SaveStatus {
-    SUCCESS, FAIL
-}
+
