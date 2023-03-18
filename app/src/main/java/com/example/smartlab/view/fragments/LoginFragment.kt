@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
             viewModel.sendCode(binding.etEmail.text.toString())
         }
     }
-    private fun setObservers(){
+    private fun setObservers() {
         viewModel.sendCodeStatus.observe(viewLifecycleOwner) {
             when (it) {
                 SendCodeStatus.SUCCESS -> {
@@ -54,7 +54,8 @@ class LoginFragment : Fragment() {
                     viewModel.clearSendCodeStatus()
                 }
                 SendCodeStatus.FAIL -> {
-                    Toast.makeText(requireContext(), "Ошибка при отправке кода", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Ошибка при отправке кода", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 SendCodeStatus.NOTHING -> {}
             }
@@ -63,7 +64,6 @@ class LoginFragment : Fragment() {
             Log.d(TAG, "setObservers: SaveEmailStatus - ${it.name}")
         }
     }
-
 
     private fun applyButtonNext() {
         binding.btnNext.apply {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-object DataStore{
+object DataStore {
     val IS_ONBOARDING_PASSED = booleanPreferencesKey("isOnboardingPassed")
     val TOKEN = stringPreferencesKey("token")
     val EMAIL = stringPreferencesKey("email")

@@ -20,7 +20,7 @@ class SplashFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
@@ -35,7 +35,6 @@ class SplashFragment : Fragment() {
                     findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
                 } else {
                     findNavController().navigate(R.id.action_splashFragment_to_onboardingFragment)
-
                 }
             }
         }

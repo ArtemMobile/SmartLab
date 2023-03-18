@@ -1,8 +1,8 @@
 package com.example.smartlab.model.api
 
 import com.example.smartlab.model.api.callModels.ProfileCall
-import com.example.smartlab.model.api.responseModels.TokenResponse
 import com.example.smartlab.model.api.responseModels.ProfileResponse
+import com.example.smartlab.model.api.responseModels.TokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header

@@ -17,8 +17,8 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private var _profile = MutableLiveData<ProfileResponse>()
     val profile = _profile
-    private var _token = MutableLiveData<String>()
 
+    private var _token = MutableLiveData<String>()
 
     fun createProfile(profile: ProfileCall){
         getToken()
@@ -31,7 +31,6 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
                     Log.d("PROFILE:",  _profile.value!!.updated_at)
                 }
             }
-
         }
     }
 
