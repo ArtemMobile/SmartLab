@@ -15,14 +15,12 @@ import com.example.smartlab.databinding.FragmentLoginBinding
 import com.example.smartlab.utils.SendCodeStatus
 import com.example.smartlab.utils.Utils
 import com.example.smartlab.viewmodel.LoginViewModel
-import com.example.smartlab.viewmodel.ProfileViewModel
 
 class LoginFragment : Fragment() {
 
     private val binding: FragmentLoginBinding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
     private val viewModel: LoginViewModel by viewModels()
     private val TAG = this::class.simpleName
-    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +43,7 @@ class LoginFragment : Fragment() {
             viewModel.sendCode(binding.etEmail.text.toString())
         }
     }
+
     private fun setObservers() {
         viewModel.sendCodeStatus.observe(viewLifecycleOwner) {
             when (it) {

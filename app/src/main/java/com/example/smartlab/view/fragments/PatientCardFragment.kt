@@ -1,11 +1,13 @@
 package com.example.smartlab.view.fragments
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.iterator
 import androidx.core.widget.doOnTextChanged
@@ -15,6 +17,8 @@ import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentPatientCardBinding
 import com.example.smartlab.model.api.callModels.ProfileCall
 import com.example.smartlab.viewmodel.ProfileViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PatientCardFragment : Fragment() {
 
@@ -43,18 +47,49 @@ class PatientCardFragment : Fragment() {
     private fun applyClicks() {
         with(binding) {
             btnNext.setOnClickListener {
-                val profileCall = ProfileCall(etBirth.text.toString(), etName.text.toString(), "", etLastname.text.toString(), etPatronymic.text.toString(), etGender.text.toString())
+                val profileCall = ProfileCall(etBirth.text.toString(),
+                    etName.text.toString(),
+                    "",
+                    etLastname.text.toString(),
+                    etPatronymic.text.toString(),
+                    etGender.text.toString())
                 profileViewModel.createProfile(profileCall)
+            }
+            etBirth.setOnClickListener {
+                val calendar = Calendar.getInstance()
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+                val month = calendar.get(Calendar.MONTH)
+                val year = calendar.get(Calendar.YEAR)
+                val datePicker = DatePickerDialog(requireContext(), { _, sYear, sMonth, sDay ->
+                    calendar.apply {
+                        set(Calendar.YEAR, sYear)
+                        set(Calendar.MONTH, sMonth)
+                        set(Calendar.DAY_OF_MONTH, sDay)
+                    }
+                    val formatter = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
+                    if(calendar.time <= Calendar.getInstance().time){
+                        (it as TextView).text = formatter.format(calendar.time)
+                    }
+                    else{
+                        Toast.makeText(requireContext(), "Выберите корректуню дату", Toast.LENGTH_SHORT).show()
+                    }
+                    applyCreateButton()
+                }, year, month, day)
+
+                datePicker.apply {
+                    setTitle("Выберите дату рождения")
+                    show()
+                }
             }
         }
     }
 
-    private fun setUpObservers(){
-        profileViewModel.profile.observe(viewLifecycleOwner){
-            Toast.makeText(requireContext(), "${it.lastname}, ${it.created_at}", Toast.LENGTH_SHORT).show()
+    private fun setUpObservers() {
+        profileViewModel.profile.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), "${it.lastname}, ${it.created_at}", Toast.LENGTH_SHORT)
+                .show()
         }
     }
-
 
     private fun setUpSpinner() {
         binding.etGender.setOnClickListener {
@@ -63,8 +98,8 @@ class PatientCardFragment : Fragment() {
             menu.show()
 
             menu.setOnMenuItemClickListener { item ->
-                (it as EditText).setText(item.title.toString())
-                applyButton()
+                (it as TextView).text = item.title.toString()
+                applyCreateButton()
                 true
             }
         }
@@ -72,15 +107,15 @@ class PatientCardFragment : Fragment() {
 
     private fun applyEditors() {
         with(binding) {
-            applyButton()
+            applyCreateButton()
             editorLayout.iterator().forEach { view ->
                 if (view is EditText) {
                     view.doOnTextChanged { text, _, _, _ ->
                         if (text!!.isNotBlank()) {
-                            applyButton()
+                            applyCreateButton()
                             view.setBackgroundResource(R.drawable.single_digit_editor_filled)
                         } else {
-                            applyButton()
+                            applyCreateButton()
                             view.setBackgroundResource(R.drawable.single_digit_editor)
                         }
                     }
@@ -89,7 +124,7 @@ class PatientCardFragment : Fragment() {
         }
     }
 
-    private fun applyButton() {
+    private fun applyCreateButton() {
         with(binding) {
             val fieldsNoEmpty = etName.text.toString().isNotBlank() && etPatronymic.text.toString()
                 .isNotBlank() && etLastname.text.toString().isNotBlank() && etGender.text.toString()
@@ -103,7 +138,6 @@ class PatientCardFragment : Fragment() {
             }
         }
     }
-
 
     companion object {
         fun newInstance(param1: String, param2: String) = PatientCardFragment().apply {

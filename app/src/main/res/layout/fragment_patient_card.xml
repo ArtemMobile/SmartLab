@@ -106,7 +106,7 @@
             android:textColorHint="#939396"
             android:textSize="@dimen/normal_editor_textsize" />
 
-        <EditText
+        <TextView
             android:id="@+id/etBirth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,7 +115,6 @@
             android:background="@drawable/single_digit_editor"
             android:fontFamily="@font/sf_pro_reg"
             android:hint="Дата рождения"
-            android:inputType="text"
             android:padding="@dimen/normal_editor_padding"
             android:textColor="@color/black"
             android:textColorHint="#939396"
@@ -123,28 +122,20 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="@dimen/margin_start_end"
-        android:layout_marginTop="@dimen/normal_editor_margin"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
+        <TextView
             android:id="@+id/etGender"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/normal_editor_margin"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_height="wrap_content"
             android:drawableRight="@drawable/vector"
             android:background="@drawable/single_digit_editor"
             android:fontFamily="@font/sf_pro_reg"
             android:hint="Пол"
-            android:editable="false"
             android:padding="@dimen/normal_editor_padding"
             android:textColor="@color/black"
             android:textColorHint="#939396"
             android:textSize="@dimen/normal_editor_textsize" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNext"

@@ -28,7 +28,6 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.Main){
                 if(response.isSuccessful){
                     _profile.value = response.body()
-                    Log.d("PROFILE:",  _profile.value!!.updated_at)
                 }
             }
         }
