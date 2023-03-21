@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_nav_graph"
+    app:startDestination="@id/analyzesFragment2">
+
+    <fragment
+        android:id="@+id/analyzesFragment2"
+        android:name="com.example.smartlab.view.fragments.AnalyzesFragment"
+        android:label="fragment_analyzes"
+        tools:layout="@layout/fragment_analyzes" />
+    <fragment
+        android:id="@+id/resultsFragment2"
+        android:name="com.example.smartlab.view.fragments.ResultsFragment"
+        android:label="fragment_results"
+        tools:layout="@layout/fragment_results" />
+    <fragment
+        android:id="@+id/supportFragment2"
+        android:name="com.example.smartlab.view.fragments.SupportFragment"
+        android:label="fragment_support"
+        tools:layout="@layout/fragment_support" />
+    <fragment
+        android:id="@+id/profileFragment2"
+        android:name="com.example.smartlab.view.fragments.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>

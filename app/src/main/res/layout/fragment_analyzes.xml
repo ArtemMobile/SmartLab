@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.fragments.AnalyzesFragment">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_start_end"
+        android:background="@drawable/single_digit_editor"
+        android:layout_marginTop="@dimen/margin_top_search"
+        android:hint="Искать анализы"
+        android:textSize="@dimen/search_textsize"
+        android:drawableStart="@drawable/search_ic"
+        android:padding="@dimen/normal_editor_padding"
+        android:drawablePadding="@dimen/search_drawable_padding"/>
+
+    <LinearLayout
+        android:id="@+id/news"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/analyzes_margin"
+        android:layout_marginStart="@dimen/margin_start_end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Акции и новости"
+            android:textSize="22.5sp"
+            android:textColor="#939396"
+            android:fontFamily="@font/sf_pro_semi"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNews"
+            android:layout_marginTop="@dimen/normal_button_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/catalog"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/analyzes_margin"
+        android:layout_marginStart="@dimen/margin_start_end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:text="sdsdfsd"
+
+            android:background="@drawable/catalog_selector"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Каталог анализов"
+            android:textSize="22.5sp"
+            android:textColor="#939396"
+            android:fontFamily="@font/sf_pro_semi"/>
+        
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/categoriesGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+
+        </HorizontalScrollView>
+
+      
+    </LinearLayout>
+
+
+</LinearLayout>
