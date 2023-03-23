@@ -75,6 +75,11 @@ dependencies {
 
     //Gson
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    //Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.14.1'
 }

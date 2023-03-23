@@ -21,11 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
-        android:paddingBottom="30dp"
-        app:itemRippleColor="#1A6FEE"
-        android:scaleY="1.2"
-        android:scaleX="1.2"
+        android:paddingBottom="16dp"
+        app:itemTextAppearanceInactive="@style/BottomNavigationViewTextStyle"
+        app:itemTextAppearanceActive="@style/BottomNavigationViewTextStyle"
         app:itemIconTint="@color/menu_item_color_selector"
+
         app:itemTextColor="@color/menu_item_color_selector"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu" />

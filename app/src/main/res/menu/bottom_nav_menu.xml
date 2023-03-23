@@ -6,7 +6,7 @@
         android:title="Анализы" />
     <item
         android:id="@+id/resultsFragment"
-        android:icon="@drawable/analyzes_ic"
+        android:icon="@drawable/results_ic"
         android:title="Результаты" />
     <item
         android:id="@+id/supportFragment"

@@ -6,3 +6,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "smartlab")
+
+
+fun Context.dpToPx(dp: Int): Int = (dp * resources.displayMetrics.density).toInt()
