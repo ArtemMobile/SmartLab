@@ -1,16 +1,16 @@
 package com.example.smartlab.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.model.dto.CatalogItem
 import com.example.smartlab.model.dto.NewsItem
 import kotlinx.coroutines.launch
 
-
-class AnalyzesViewModel : ViewModel() {
+class AnalyzesViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private var _news = MutableLiveData<List<NewsItem>>()
     val news = _news

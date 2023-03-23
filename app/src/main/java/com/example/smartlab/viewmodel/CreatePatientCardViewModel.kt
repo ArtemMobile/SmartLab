@@ -3,16 +3,16 @@ package com.example.smartlab.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.model.api.callModels.ProfileCall
 import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.utils.DataStore
-import kotlinx.coroutines.Dispatchers
+import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CreatePatientCardViewModel(private val app: Application) : AndroidViewModel(app) {
 
@@ -31,14 +31,12 @@ class CreatePatientCardViewModel(private val app: Application) : AndroidViewMode
     }
 
     fun createProfile(profile: ProfileCall) {
-        Log.d("TOKEN:", _token.value.toString())
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = SmartLabClient.retrofit.createProfile("application/json",
-                "Bearer ${_token.value.toString()}",
-                profile)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    _profile.value = response.body()
+        viewModelScope.launch {
+            val response = SmartLabClient.retrofit.createProfile("application/json", "Bearer ${_token.value.toString()}", profile)
+            if (response.isSuccessful) {
+                _profile.value = response.body()
+                DataStore.saveUser(app, _profile.value!!).collect{
+                    Log.d("USER SAVED", "$it")
                 }
             }
         }

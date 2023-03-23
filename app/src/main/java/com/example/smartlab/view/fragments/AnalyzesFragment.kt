@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +23,6 @@ class AnalyzesFragment : Fragment() {
     private val viewModel: AnalyzesViewModel by viewModels()
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var catalogAdapter: CatalogAdapter
-    private var categoriesAdded = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -47,7 +48,7 @@ class AnalyzesFragment : Fragment() {
             }
         }
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
-            if (!categoriesAdded) {
+            if (binding.chipGroup.isEmpty()) {
                 categories.forEachIndexed { index, category ->
                     val chip =
                         CatalogChipBinding.inflate(layoutInflater).rootChip.apply {
@@ -57,7 +58,6 @@ class AnalyzesFragment : Fragment() {
                         id = index
                     })
                 }
-                categoriesAdded = true
             }
         }
     }
