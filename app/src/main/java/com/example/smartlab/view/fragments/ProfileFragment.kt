@@ -86,16 +86,17 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPatientCard()
-        setObservers()
+        setEditors()
+        setUpSpinner()
         setListeners()
-
+        setObservers()
     }
 
     private fun setObservers() {
         viewModel.patientCard.observe(viewLifecycleOwner) {
             it?.let { patientCard: ProfileResponse ->
                 setPatientCardData(patientCard)
-                setEditors()
+                //setEditors()
             }
         }
     }
@@ -103,7 +104,6 @@ class ProfileFragment : Fragment() {
     private fun setListeners() {
         if (editProfileBinding != null) {
             with(editProfileBinding!!) {
-                etGender.setOnClickListener { setUpSpinner(it as TextView) }
                 btnSavePatientCard.setOnClickListener {
                     val profileCall = ProfileRequest(etDateOfBirth.text.toString(),
                         etName.text.toString(),
@@ -123,10 +123,9 @@ class ProfileFragment : Fragment() {
                         askForCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }
-
         } else {
             with(createProfileBinding!!) {
-                etGender.setOnClickListener { setUpSpinner(it as TextView) }
+
                 btnCreateCard.setOnClickListener {
                     val profileCall = ProfileRequest(etBirth.text.toString(),
                         etName.text.toString(),
@@ -162,7 +161,6 @@ class ProfileFragment : Fragment() {
                     "Выберите корректуню дату",
                     Toast.LENGTH_SHORT).show()
             }
-            applyCreateButton()
         }, year, month, day)
 
         datePicker.apply {
@@ -171,15 +169,31 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setUpSpinner(view: TextView) {
-        view.setOnClickListener {
-            val menu = PopupMenu(requireContext(), it)
-            menu.inflate(R.menu.dropdown_menu)
-            menu.show()
-            menu.setOnMenuItemClickListener { item ->
-                (it as TextView).text = item.title.toString()
-                applyCreateButton()
-                true
+    private fun setUpSpinner() {
+        if (editProfileBinding != null) {
+            with(editProfileBinding!!) {
+                this.etGender.setOnClickListener {
+                    val menu = PopupMenu(requireContext(), etGender)
+                    menu.inflate(R.menu.dropdown_menu)
+                    menu.show()
+                    menu.setOnMenuItemClickListener { item ->
+                        this.etGender.text = item.title.toString()
+                        true
+                    }
+                }
+            }
+        } else {
+            with(createProfileBinding!!) {
+                this.etGender.setOnClickListener{
+                    val menu = PopupMenu(requireContext(), etGender)
+                    menu.inflate(R.menu.dropdown_menu)
+                    menu.show()
+                    menu.setOnMenuItemClickListener { item ->
+                        this.etGender.text = item.title.toString()
+                        true
+                    }
+                }
+
             }
         }
     }
@@ -189,14 +203,14 @@ class ProfileFragment : Fragment() {
         if (binding is FragmentProfileBinding) {
             with(editProfileBinding!!) {
                 viewModel.getImageName()
-                if(viewModel.imageFileName.value != ""){
+                if (viewModel.imageFileName.value != "") {
                     loadPhoto()
 
                 }
                 etName.setText(patientCard.firstname)
                 etMiddleName.setText(patientCard.middlename)
                 etSurname.setText(patientCard.lastname)
-                etDateOfBirth.setText(patientCard.bith)
+                etDateOfBirth.text = patientCard.bith
                 etGender.text = patientCard.pol
             }
         }
@@ -207,7 +221,9 @@ class ProfileFragment : Fragment() {
             with(editProfileBinding!!) {
                 applyEditButton()
                 mainContainer.iterator().forEach { view ->
+                    etDateOfBirth.setBackgroundResource(R.drawable.single_digit_editor_filled)
                     if (view is EditText) {
+                        view.setBackgroundResource(R.drawable.single_digit_editor_filled)
                         view.doOnTextChanged { text, _, _, _ ->
                             if (text!!.isNotBlank()) {
                                 view.setBackgroundResource(R.drawable.single_digit_editor_filled)
@@ -297,12 +313,12 @@ class ProfileFragment : Fragment() {
             Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun loadPhoto(){
+    private fun loadPhoto() {
         val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
-        viewModel.imageFileName.observe(viewLifecycleOwner){
+        viewModel.imageFileName.observe(viewLifecycleOwner) {
             val file = File(dir, it)
-            if(file.exists()){
-                FileInputStream(file).use{
+            if (file.exists()) {
+                FileInputStream(file).use {
                     String(file.readBytes())
                     Glide.with(requireContext())
                         .load(file.toUri())
