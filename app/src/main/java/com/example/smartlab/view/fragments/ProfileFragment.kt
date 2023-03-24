@@ -1,7 +1,15 @@
 package com.example.smartlab.view.fragments
 
+import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
+import android.content.ContentValues
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,17 +17,26 @@ import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.iterator
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentCreatePatientCardBinding
 import com.example.smartlab.databinding.FragmentProfileBinding
 import com.example.smartlab.model.api.callModels.ProfileRequest
 import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.viewmodel.ProfileViewModel
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
+import java.time.LocalTime
 import java.util.*
 
 class ProfileFragment : Fragment() {
@@ -27,6 +44,26 @@ class ProfileFragment : Fragment() {
     private var editProfileBinding: FragmentProfileBinding? = null
     private var createProfileBinding: FragmentCreatePatientCardBinding? = null
     private val viewModel: ProfileViewModel by viewModels()
+    private lateinit var uri: Uri
+
+    private val takePhotoLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+            try {
+                if (res.resultCode == RESULT_OK)
+                    savePhoto(uri)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "can't", Toast.LENGTH_SHORT).show()
+            }
+        }
+    private val askForCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            if (!granted)
+                Toast.makeText(requireContext(),
+                    "Allow camera access to take photo",
+                    Toast.LENGTH_SHORT).show()
+            else
+                capturePhoto()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,21 +71,22 @@ class ProfileFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         viewModel.getPatientCard()
-        viewModel.patientCard.value?.let {
+        return if (viewModel.patientCard.value?.firstname != null) {
             editProfileBinding = FragmentProfileBinding.inflate(inflater, container, false)
             viewModel.isEditMode = true
-            return editProfileBinding!!.root
+            editProfileBinding!!.root
+        } else {
+            createProfileBinding =
+                FragmentCreatePatientCardBinding.inflate(inflater, container, false)
+                    .apply { tvSkip.visibility = View.GONE }
+            createProfileBinding!!.root
         }
-        createProfileBinding = FragmentCreatePatientCardBinding.inflate(inflater, container, false)
-            .apply { tvSkip.visibility = View.GONE }
-        return createProfileBinding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setEditors()
-        setObservers()
         viewModel.getPatientCard()
+        setObservers()
         setListeners()
 
     }
@@ -57,15 +95,16 @@ class ProfileFragment : Fragment() {
         viewModel.patientCard.observe(viewLifecycleOwner) {
             it?.let { patientCard: ProfileResponse ->
                 setPatientCardData(patientCard)
+                setEditors()
             }
         }
     }
 
-    private fun setListeners(){
-        if (editProfileBinding != null){
-            with(editProfileBinding!!){
-                etGender.setOnClickListener{ setUpSpinner(it as TextView) }
-                btnSavePatientCard.setOnClickListener{
+    private fun setListeners() {
+        if (editProfileBinding != null) {
+            with(editProfileBinding!!) {
+                etGender.setOnClickListener { setUpSpinner(it as TextView) }
+                btnSavePatientCard.setOnClickListener {
                     val profileCall = ProfileRequest(etDateOfBirth.text.toString(),
                         etName.text.toString(),
                         "",
@@ -74,14 +113,20 @@ class ProfileFragment : Fragment() {
                         etGender.text.toString())
                     viewModel.updateProfile(profileCall)
                 }
-                etDateOfBirth.setOnClickListener{
+                etDateOfBirth.setOnClickListener {
                     setUpDatePicker(it as TextView)
+                }
+                avatarCard.setOnClickListener {
+                    if (cameraPermissionGranted())
+                        capturePhoto()
+                    else
+                        askForCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }
 
-        } else{
-            with(createProfileBinding!!){
-                etGender.setOnClickListener{ setUpSpinner(it as TextView) }
+        } else {
+            with(createProfileBinding!!) {
+                etGender.setOnClickListener { setUpSpinner(it as TextView) }
                 btnCreateCard.setOnClickListener {
                     val profileCall = ProfileRequest(etBirth.text.toString(),
                         etName.text.toString(),
@@ -91,14 +136,14 @@ class ProfileFragment : Fragment() {
                         etGender.text.toString())
                     viewModel.createProfile(profileCall)
                 }
-                etBirth.setOnClickListener{
+                etBirth.setOnClickListener {
                     setUpDatePicker(it as TextView)
                 }
             }
         }
     }
 
-    private fun setUpDatePicker(view: TextView){
+    private fun setUpDatePicker(view: TextView) {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val month = calendar.get(Calendar.MONTH)
@@ -143,6 +188,11 @@ class ProfileFragment : Fragment() {
         val binding = if (viewModel.isEditMode) editProfileBinding else createProfileBinding
         if (binding is FragmentProfileBinding) {
             with(editProfileBinding!!) {
+                viewModel.getImageName()
+                if(viewModel.imageFileName.value != ""){
+                    loadPhoto()
+
+                }
                 etName.setText(patientCard.firstname)
                 etMiddleName.setText(patientCard.middlename)
                 etSurname.setText(patientCard.lastname)
@@ -152,8 +202,8 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setEditors(){
-        if(editProfileBinding != null){
+    private fun setEditors() {
+        if (editProfileBinding != null) {
             with(editProfileBinding!!) {
                 applyEditButton()
                 mainContainer.iterator().forEach { view ->
@@ -169,7 +219,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-        } else{
+        } else {
             with(createProfileBinding!!) {
                 applyCreateButton()
                 editorLayout.iterator().forEach { view ->
@@ -189,17 +239,19 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun applyEditButton(){
+    private fun applyEditButton() {
         with(editProfileBinding!!) {
             val fieldsNoEmpty = etName.text.toString().isNotBlank() &&
                     etSurname.text.toString().isNotBlank() && etGender.text.toString()
                 .isNotBlank() && etMiddleName.text.toString().isNotBlank()
             if (fieldsNoEmpty) {
                 btnSavePatientCard.isEnabled = true
-                btnSavePatientCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.blue_button, null))
+                btnSavePatientCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.blue_button,
+                    null))
             } else {
                 btnSavePatientCard.isEnabled = false
-                btnSavePatientCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.inactive_button, null))
+                btnSavePatientCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.inactive_button,
+                    null))
             }
         }
     }
@@ -211,10 +263,51 @@ class ProfileFragment : Fragment() {
                 .isNotBlank() && etBirth.text.toString().isNotBlank()
             if (fieldsNoEmpty) {
                 btnCreateCard.isEnabled = true
-                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.blue_button, null))
+                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.blue_button,
+                    null))
             } else {
                 btnCreateCard.isEnabled = false
-                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.inactive_button, null))
+                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.inactive_button,
+                    null))
+            }
+        }
+    }
+
+    private fun savePhoto(uri: Uri) {
+        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+        val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
+        val file = File(dir, "image_${LocalTime.now().nano}.jpg")
+        viewModel.saveImageToPrefs(file.name)
+        val fo = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fo)
+        fo.flush()
+        fo.close()
+    }
+
+    private fun capturePhoto() {
+        uri = requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            ContentValues())!!
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
+        takePhotoLauncher.launch(intent)
+    }
+
+    private fun cameraPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(requireContext(),
+            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun loadPhoto(){
+        val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
+        viewModel.imageFileName.observe(viewLifecycleOwner){
+            val file = File(dir, it)
+            if(file.exists()){
+                FileInputStream(file).use{
+                    String(file.readBytes())
+                    Glide.with(requireContext())
+                        .load(file.toUri())
+                        .into(editProfileBinding!!.ivAvatar)
+                }
             }
         }
     }

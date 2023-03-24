@@ -24,6 +24,9 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
     private val _createProfileStatus = MutableLiveData<ProfileResponse>()
     val createProfileStatus = _createProfileStatus
 
+    private val _imageFileName = MutableLiveData<String>()
+    val imageFileName = _imageFileName
+
     var isEditMode = false
 
     init {
@@ -38,6 +41,22 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             DataStore.getPatientCard(app).collect {
                 _patientCard.value = it
+            }
+        }
+    }
+
+    fun getImageName(){
+        viewModelScope.launch {
+            DataStore.getImage(app).collect {
+                _imageFileName.value = it
+            }
+        }
+    }
+
+    fun saveImageToPrefs(image: String){
+        viewModelScope.launch {
+            DataStore.saveImage(app, image).collect {
+                Log.d("IMAGE SAVED", "$it")
             }
         }
     }

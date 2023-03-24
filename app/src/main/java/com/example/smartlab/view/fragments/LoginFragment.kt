@@ -34,8 +34,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         applyButtonNext()
         setObservers()
-        setListeners()
-    }
+        setListeners() }
 
     private fun setListeners() {
         binding.btnNext.setOnClickListener {

@@ -15,6 +15,7 @@ object DataStore {
     val TOKEN = stringPreferencesKey("token")
     val EMAIL = stringPreferencesKey("email")
     val PROFILE = stringPreferencesKey("profile")
+    val PROFILE_IMAGE = stringPreferencesKey("profile_image")
     val IS_CREATE_PATIENT_CARD_PASSED = booleanPreferencesKey("isCreatePatientCardPassed")
 
     suspend fun saveToken(context: Context, token: String): Flow<SaveStatus> {
@@ -72,6 +73,22 @@ object DataStore {
                 emit(SaveStatus.SUCCESS)
             }
         }
+    }
+
+    suspend fun saveImage(context: Context, fileName: String): Flow<SaveStatus> {
+        return flow {
+            context.dataStore.edit {
+                it[PROFILE_IMAGE] = fileName
+                emit(SaveStatus.SUCCESS)
+            }
+        }
+    }
+
+    fun getImage(context: Context): Flow<String>{
+        val imageFile = context.dataStore.data.map {
+            it[PROFILE_IMAGE] ?: ""
+        }
+        return imageFile
     }
 }
 
