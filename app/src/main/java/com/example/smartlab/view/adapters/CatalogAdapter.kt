@@ -34,7 +34,7 @@ class CatalogAdapter(
         }
         if (position == catalog.lastIndex) {
             holder.binding.catalogItemRoot.updateLayoutParams<RecyclerView.LayoutParams> {
-                setMargins(context.dpToPx(20), context.dpToPx(20), context.dpToPx(20), context.dpToPx(20))
+                setMargins(context.dpToPx(10), context.dpToPx(20), 0, context.dpToPx(20))
             }
         }
     }

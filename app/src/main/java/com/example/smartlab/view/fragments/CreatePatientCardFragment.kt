@@ -1,16 +1,20 @@
 package com.example.smartlab.view.fragments
 
 import android.app.DatePickerDialog
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.iterator
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -114,16 +118,26 @@ class CreatePatientCardFragment : Fragment() {
         with(binding) {
             applyCreateButton()
             editorLayout.iterator().forEach { view ->
-                if (view is EditText) {
-                    view.doOnTextChanged { text, _, _, _ ->
-                        if (text!!.isNotBlank()) {
-                            applyCreateButton()
-                            view.setBackgroundResource(R.drawable.single_digit_editor_filled)
-                        } else {
-                            applyCreateButton()
-                            view.setBackgroundResource(R.drawable.single_digit_editor)
+                if (view is TextView) {
+                    view.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int, ) {
+
                         }
-                    }
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int, ) {
+                            if (s!!.isNotBlank()) {
+                                applyCreateButton()
+                                view.setBackgroundResource(R.drawable.single_digit_editor_filled)
+                            } else {
+                                applyCreateButton()
+                                view.setBackgroundResource(R.drawable.single_digit_editor)
+                            }
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+
+                        }
+                    })
                 }
             }
         }

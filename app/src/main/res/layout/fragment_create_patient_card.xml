@@ -128,23 +128,23 @@
             android:textColorHint="#939396"
             android:textSize="@dimen/normal_editor_textsize" />
 
-
-        <TextView
-            android:id="@+id/etGender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_start_end"
-            android:layout_marginTop="@dimen/normal_editor_margin"
-            android:background="@drawable/single_digit_editor"
-            android:fontFamily="@font/sf_pro_reg"
-            android:hint="Пол"
-            android:padding="@dimen/normal_editor_padding"
-            android:textColor="@color/black"
-            android:textColorHint="#939396"
-            android:textSize="@dimen/normal_editor_textsize"
-            app:drawableRightCompat="@drawable/vector" />
-
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/etGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_start_end"
+        android:layout_marginTop="@dimen/normal_editor_margin"
+        android:background="@drawable/single_digit_editor"
+        android:fontFamily="@font/sf_pro_reg"
+        android:hint="Пол"
+        android:padding="@dimen/normal_editor_padding"
+        android:textColor="@color/black"
+        android:textColorHint="#939396"
+        android:textSize="@dimen/normal_editor_textsize"
+        app:drawableRightCompat="@drawable/vector" />
 
 
     <com.google.android.material.button.MaterialButton
@@ -153,8 +153,9 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_start_end"
         android:layout_marginTop="@dimen/margin4"
-        android:backgroundTint="#1A6FEE"
+        android:backgroundTint="@color/inactive_button"
         android:fontFamily="@font/sf_pro_semi"
+        android:enabled="false"
         android:letterSpacing="0"
         android:paddingVertical="@dimen/normal_button_padding"
         android:stateListAnimator="@null"

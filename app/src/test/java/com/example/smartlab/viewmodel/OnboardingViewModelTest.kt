@@ -41,10 +41,11 @@ internal class OnboardingViewModelTest{
     @Before
     fun initViewModel(){
         viewModel = OnboardingViewModel(application)
+
     }
 
     @Test
-    fun `correctly extracting elements from the queue`() {
+    fun correctly_extracting_elements_from_the_queue() {
         val firstElement = OnboardingItem("Анализы", "Экспресс сбор и получение проб", R.drawable.onboarding_01)
         val secondElement = OnboardingItem("Уведомления", "Вы быстро узнаете о результатах", R.drawable.onboarding_02)
         val thirdElement = OnboardingItem("Мониторинг", "Наши врачи всегда наблюдают\nза вашими показателями здоровья", R.drawable.onboarding_03)

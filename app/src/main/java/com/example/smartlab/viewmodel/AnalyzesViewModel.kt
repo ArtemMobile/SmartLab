@@ -18,8 +18,8 @@ class AnalyzesViewModel(private val app: Application) : AndroidViewModel(app) {
     private var _catalog = MutableLiveData<List<CatalogItem>>()
     val catalog = _catalog
 
-    private val _categories: MutableLiveData<HashSet<String>> = MutableLiveData()
-    val categories: LiveData<HashSet<String>> = _categories
+    private val _categories: MutableLiveData<List<String>> = MutableLiveData()
+    val categories: LiveData<List<String>> = _categories
 
 
 //    private val _categories = MutableLiveData<List<String>>()
@@ -42,11 +42,11 @@ class AnalyzesViewModel(private val app: Application) : AndroidViewModel(app) {
             if (response.isSuccessful) {
                 if (response.body() != null) {
                     _catalog.value = response.body()
-                    val currentCategories = java.util.HashSet<String>()
+                    val currentCategories = ArrayList<String>()
                     response.body()!!.forEach {
                         currentCategories.add(it.category)
                     }
-                    _categories.value = currentCategories
+                    _categories.value = currentCategories.distinct()
                 }
             }
         }

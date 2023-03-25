@@ -10,10 +10,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
@@ -22,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.iterator
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -32,6 +32,9 @@ import com.example.smartlab.databinding.FragmentProfileBinding
 import com.example.smartlab.model.api.callModels.ProfileRequest
 import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.viewmodel.ProfileViewModel
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -45,12 +48,14 @@ class ProfileFragment : Fragment() {
     private var createProfileBinding: FragmentCreatePatientCardBinding? = null
     private val viewModel: ProfileViewModel by viewModels()
     private lateinit var uri: Uri
+    private var showPhoto = true
 
     private val takePhotoLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
             try {
                 if (res.resultCode == RESULT_OK)
                     savePhoto(uri)
+
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "can't", Toast.LENGTH_SHORT).show()
             }
@@ -86,17 +91,17 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getPatientCard()
-        setEditors()
+        setObservers()
+        //setEditors()
         setUpSpinner()
         setListeners()
-        setObservers()
     }
 
     private fun setObservers() {
         viewModel.patientCard.observe(viewLifecycleOwner) {
             it?.let { patientCard: ProfileResponse ->
                 setPatientCardData(patientCard)
-                //setEditors()
+                setEditors()
             }
         }
     }
@@ -125,7 +130,6 @@ class ProfileFragment : Fragment() {
             }
         } else {
             with(createProfileBinding!!) {
-
                 btnCreateCard.setOnClickListener {
                     val profileCall = ProfileRequest(etBirth.text.toString(),
                         etName.text.toString(),
@@ -184,7 +188,7 @@ class ProfileFragment : Fragment() {
             }
         } else {
             with(createProfileBinding!!) {
-                this.etGender.setOnClickListener{
+                this.etGender.setOnClickListener {
                     val menu = PopupMenu(requireContext(), etGender)
                     menu.inflate(R.menu.dropdown_menu)
                     menu.show()
@@ -202,10 +206,8 @@ class ProfileFragment : Fragment() {
         val binding = if (viewModel.isEditMode) editProfileBinding else createProfileBinding
         if (binding is FragmentProfileBinding) {
             with(editProfileBinding!!) {
-                viewModel.getImageName()
-                if (viewModel.imageFileName.value != "") {
-                    loadPhoto()
-
+                if (patientCard.image != "") {
+                    loadPhoto(patientCard.image)
                 }
                 etName.setText(patientCard.firstname)
                 etMiddleName.setText(patientCard.middlename)
@@ -219,36 +221,81 @@ class ProfileFragment : Fragment() {
     private fun setEditors() {
         if (editProfileBinding != null) {
             with(editProfileBinding!!) {
-                applyEditButton()
+                etGender.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int, ) {
+
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int, ) {
+
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        applyEditButton()
+                    }
+                })
+
                 mainContainer.iterator().forEach { view ->
                     etDateOfBirth.setBackgroundResource(R.drawable.single_digit_editor_filled)
-                    if (view is EditText) {
+                    if (view is TextView) {
                         view.setBackgroundResource(R.drawable.single_digit_editor_filled)
-                        view.doOnTextChanged { text, _, _, _ ->
-                            if (text!!.isNotBlank()) {
-                                view.setBackgroundResource(R.drawable.single_digit_editor_filled)
-                            } else {
-                                view.setBackgroundResource(R.drawable.single_digit_editor)
+                        view.addTextChangedListener(object : TextWatcher {
+                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int, ) {
                             }
-                            applyEditButton()
-                        }
+
+                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int,
+                            ) {
+                                if (s!!.isNotBlank()) {
+                                    view.setBackgroundResource(R.drawable.single_digit_editor_filled)
+                                } else {
+                                    view.setBackgroundResource(R.drawable.single_digit_editor)
+                                }
+                                applyEditButton()
+                            }
+
+                            override fun afterTextChanged(s: Editable?) {}
+                        })
                     }
                 }
             }
         } else {
             with(createProfileBinding!!) {
-                applyCreateButton()
+                etGender.addTextChangedListener(object: TextWatcher{
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int, ) {
+
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int, ) {
+
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        applyCreateButton()
+                    }
+
+                })
                 editorLayout.iterator().forEach { view ->
-                    if (view is EditText) {
-                        view.doOnTextChanged { text, _, _, _ ->
-                            if (text!!.isNotBlank()) {
-                                applyCreateButton()
-                                view.setBackgroundResource(R.drawable.single_digit_editor_filled)
-                            } else {
-                                applyCreateButton()
-                                view.setBackgroundResource(R.drawable.single_digit_editor)
+                    if (view is TextView) {
+                        if(view.text.isNotBlank())
+                            view.setBackgroundResource(R.drawable.single_digit_editor_filled)
+                        view.addTextChangedListener(object : TextWatcher {
+                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int, ) {
+
                             }
-                        }
+
+                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int, ) {
+                                if (s!!.isNotBlank()) {
+                                    view.setBackgroundResource(R.drawable.single_digit_editor_filled)
+                                } else {
+                                    view.setBackgroundResource(R.drawable.single_digit_editor)
+                                }
+                                applyCreateButton()
+                            }
+
+                            override fun afterTextChanged(s: Editable?) {
+
+                            }
+                        })
                     }
                 }
             }
@@ -279,12 +326,10 @@ class ProfileFragment : Fragment() {
                 .isNotBlank() && etBirth.text.toString().isNotBlank()
             if (fieldsNoEmpty) {
                 btnCreateCard.isEnabled = true
-                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.blue_button,
-                    null))
+                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.blue_button, null))
             } else {
                 btnCreateCard.isEnabled = false
-                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.inactive_button,
-                    null))
+                btnCreateCard.setBackgroundColor(resources.getColor(com.example.smartlab.R.color.inactive_button, null))
             }
         }
     }
@@ -298,6 +343,10 @@ class ProfileFragment : Fragment() {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fo)
         fo.flush()
         fo.close()
+        editProfileBinding!!.ivAvatar.setImageBitmap(bitmap)
+        val requestFile = file.asRequestBody("file".toMediaTypeOrNull())
+        viewModel.updateAvatar(MultipartBody.Part.createFormData("file", file.name, requestFile))
+        showPhoto = false
     }
 
     private fun capturePhoto() {
@@ -313,16 +362,25 @@ class ProfileFragment : Fragment() {
             Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun loadPhoto() {
-        val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
-        viewModel.imageFileName.observe(viewLifecycleOwner) {
-            val file = File(dir, it)
-            if (file.exists()) {
-                FileInputStream(file).use {
-                    String(file.readBytes())
-                    Glide.with(requireContext())
-                        .load(file.toUri())
-                        .into(editProfileBinding!!.ivAvatar)
+    private fun loadPhoto(photo: String) {
+        viewModel.getImageName()
+        if (showPhoto) {
+        Glide.with(requireContext())
+            .load(photo)
+            .placeholder(R.drawable.photo_placeholder)
+            .into(editProfileBinding!!.ivAvatar)
+            showPhoto = false
+        } else {
+            viewModel.imageFileName.observe(viewLifecycleOwner) {
+                val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
+                val file = File(dir, it)
+                if (file.exists()) {
+                    FileInputStream(file).use {
+                        String(file.readBytes())
+                        Glide.with(requireContext())
+                            .load(file.toUri())
+                            .into(editProfileBinding!!.ivAvatar)
+                    }
                 }
             }
         }

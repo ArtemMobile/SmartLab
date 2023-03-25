@@ -126,6 +126,7 @@
                 android:padding="14dp"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
+
         </LinearLayout>
 
         <TextView
@@ -142,6 +143,7 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             app:drawableEndCompat="@drawable/vector" />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSavePatientCard"

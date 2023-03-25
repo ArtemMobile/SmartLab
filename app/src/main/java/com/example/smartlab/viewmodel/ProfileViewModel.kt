@@ -12,6 +12,7 @@ import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.utils.DataStore
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 
 class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
 
@@ -85,6 +86,13 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
             } else {
                 Log.d(TAG, "updateProfile: error ${response.message()}")
             }
+        }
+    }
+
+    fun updateAvatar(avatar: MultipartBody.Part) {
+        viewModelScope.launch {
+            val response = SmartLabClient.retrofit.updateAvatar("Bearer $token", avatar)
+            Log.d(TAG, "updateAvatar: ${response.code()}")
         }
     }
 }

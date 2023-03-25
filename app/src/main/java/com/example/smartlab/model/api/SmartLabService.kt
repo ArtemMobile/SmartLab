@@ -5,6 +5,7 @@ import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.model.api.responseModels.TokenResponse
 import com.example.smartlab.model.dto.CatalogItem
 import com.example.smartlab.model.dto.NewsItem
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -25,15 +26,22 @@ interface SmartLabService {
         @Body userBody: ProfileRequest,
     ): Response<ProfileResponse>
 
+    @PUT("api/updateProfile")
+    suspend fun updateProfile(
+        @Header("Authorization") token: String,
+        @Body profile: ProfileRequest,
+    ): Response<ProfileResponse>
+
     @GET("api/news")
     suspend fun getNews(): Response<List<NewsItem>>
 
     @GET("api/catalog")
     suspend fun getCatalog(): Response<List<CatalogItem>>
 
-    @PUT("api/updateProfile")
-    suspend fun updateProfile(
+    @Multipart
+    @POST("api/avatar")
+    suspend fun updateAvatar(
         @Header("Authorization") token: String,
-        @Body profile: ProfileRequest,
-    ): Response<ProfileResponse>
+        @Part file: MultipartBody.Part
+    ): Response<Unit>
 }

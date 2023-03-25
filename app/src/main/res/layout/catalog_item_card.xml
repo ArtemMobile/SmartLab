@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="12dp"
-    android:layout_marginHorizontal="20dp"
+    android:layout_marginHorizontal="10dp"
     app:strokeColor="#F4F4F4"
     app:strokeWidth="1dp"
     android:layout_marginTop="16dp"
