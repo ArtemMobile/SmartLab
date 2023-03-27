@@ -41,4 +41,13 @@
         <item name="android:textStyle">normal</item>
         <item name="android:letterSpacing">0</item>
     </style>
+
+    <style name="AppModalStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="AppBottomSheet" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
 </resources>

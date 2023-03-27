@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:overScrollMode="never"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:overScrollMode="never">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:overScrollMode="never"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:overScrollMode="never">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -33,6 +33,8 @@
                     android:drawableStart="@drawable/search_ic"
                     android:drawablePadding="8dp"
                     android:hint="Искать анализы"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:paddingStart="14dp"
                     android:textSize="16sp"
                     tools:ignore="RtlSymmetry" />
@@ -50,10 +52,31 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/searchResultsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="80dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    app:dividerColor="#F4F4F4" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSearchResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_marginHorizontal="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/mainContainer"
-                android:layout_marginTop="104dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="80dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -71,9 +94,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:overScrollMode="never"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
+                    android:overScrollMode="never"
                     android:paddingHorizontal="20dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/news_item_card" />
@@ -109,11 +132,11 @@
                     android:id="@+id/rvCatalog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:overScrollMode="never"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/catalog_item_card" />
             </LinearLayout>
         </FrameLayout>

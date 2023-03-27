@@ -2,6 +2,8 @@ package com.example.smartlab.view.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +12,19 @@ import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.smartlab.R
+import com.example.smartlab.databinding.BottomSheetAnalyzeBinding
 import com.example.smartlab.databinding.CatalogChipBinding
 import com.example.smartlab.databinding.FragmentAnalyzesBinding
 import com.example.smartlab.model.dto.CatalogItem
 import com.example.smartlab.model.dto.NewsItem
 import com.example.smartlab.view.adapters.CatalogAdapter
 import com.example.smartlab.view.adapters.NewsAdapter
+import com.example.smartlab.view.adapters.SearchAdapter
 import com.example.smartlab.viewmodel.AnalyzesViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -28,6 +36,7 @@ class AnalyzesFragment : Fragment() {
     private val viewModel: AnalyzesViewModel by viewModels()
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var catalogAdapter: CatalogAdapter
+    private lateinit var searchAdapter: SearchAdapter
     private lateinit var categoriesList: List<String>
     private lateinit var catalogList: List<CatalogItem>
     private lateinit var newsList: List<NewsItem>
@@ -42,12 +51,13 @@ class AnalyzesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getNews()
-        viewModel.getCatalog()
+        setListeners()
         setUpObservers()
         applyChips()
         initSwipeRefreshLayout()
-        setListeners()
+        viewModel.getNews()
+        viewModel.getCatalog()
+
     }
 
     private fun setUpObservers() {
@@ -61,6 +71,7 @@ class AnalyzesFragment : Fragment() {
             with(binding.rvCatalog) {
                 catalogList = it
                 initCatalogRecycler()
+                initSearchRecyclerView()
             }
         }
         viewModel.categories.observe(viewLifecycleOwner) { categories ->
@@ -77,13 +88,30 @@ class AnalyzesFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.etSearch.setOnFocusChangeListener { _, isFocused ->
-            if (isFocused) {
+        binding.etSearch.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
                 binding.tvCancel.visibility = View.VISIBLE
                 binding.mainContainer.visibility = View.GONE
+                binding.searchResultsContainer.visibility = View.VISIBLE
+                binding.etSearch.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                    override fun afterTextChanged(s: Editable?) {
+                        viewModel.catalog.value?.let {
+                            binding.searchResultsContainer.visibility = View.VISIBLE
+                            val searchItems = it.filter { catalogItem ->
+                                catalogItem.name.lowercase().contains(s.toString().lowercase())
+                            }
+                            searchAdapter.updateItems(searchItems)
+                        }
+                    }
+                })
             } else {
                 binding.tvCancel.visibility = View.GONE
                 binding.mainContainer.visibility = View.VISIBLE
+                binding.searchResultsContainer.visibility = View.GONE
             }
         }
         binding.tvCancel.setOnClickListener {
@@ -92,6 +120,22 @@ class AnalyzesFragment : Fragment() {
                 requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view?.windowToken, 0)
         }
+    }
+
+    private fun showAnalyzeDialog(analyzeItem: CatalogItem) {
+        val analyzeBinding = BottomSheetAnalyzeBinding.inflate(layoutInflater)
+        val analyzeDialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheet)
+        analyzeBinding.apply {
+            tvTitle.text = analyzeItem.name
+            tvDescription.text = analyzeItem.description
+            tvPreparation.text = analyzeItem.preparation
+            tvTimerResult.text = analyzeItem.time_result
+            tvBio.text = analyzeItem.bio
+            btnAdd.text = "${analyzeItem.price} ₽"
+            ivClose.setOnClickListener { analyzeDialog.cancel() }
+        }
+        analyzeDialog.setContentView(analyzeBinding.root)
+        analyzeDialog.show()
     }
 
     private fun applyChips() {
@@ -116,7 +160,7 @@ class AnalyzesFragment : Fragment() {
 
     private fun initCatalogRecycler() {
         with(binding.rvCatalog) {
-            catalogAdapter = CatalogAdapter(requireContext(), catalogList)
+            catalogAdapter = CatalogAdapter(requireContext(), catalogList, onCardClickListener = {showAnalyzeDialog(it)})
             adapter = catalogAdapter
         }
     }
@@ -125,6 +169,20 @@ class AnalyzesFragment : Fragment() {
         with(binding.rvNews) {
             newsAdapter = NewsAdapter(requireContext(), newsList)
             adapter = newsAdapter
+        }
+    }
+
+    private fun initSearchRecyclerView() {
+        searchAdapter = SearchAdapter(requireContext(), catalogList)
+        binding.rvSearchResults.apply {
+            adapter = searchAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
         }
     }
 

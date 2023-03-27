@@ -117,7 +117,7 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true"/>
+            />
     </fragment>
     <activity
         android:id="@+id/mainActivity"

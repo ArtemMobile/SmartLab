@@ -14,6 +14,7 @@ class CatalogAdapter(
     private val context: Context,
     var catalog: List<CatalogItem>,
     var onAddButtonClickListener: (CatalogItem) -> Unit = {},
+    val onCardClickListener: (CatalogItem) -> Unit = {}
 ) : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() {
 
     class CatalogViewHolder(val binding: CatalogItemCardBinding) : RecyclerView.ViewHolder(binding.root)
@@ -31,12 +32,17 @@ class CatalogAdapter(
             btnAdd.setOnClickListener {
                 onAddButtonClickListener(catalogItem)
             }
+            root.setOnClickListener {
+                onCardClickListener(catalogItem)
+            }
         }
         if (position == catalog.lastIndex) {
             holder.binding.catalogItemRoot.updateLayoutParams<RecyclerView.LayoutParams> {
                 setMargins(context.dpToPx(10), context.dpToPx(20), 0, context.dpToPx(20))
             }
         }
+
+
     }
 
     override fun getItemCount(): Int = catalog.size
