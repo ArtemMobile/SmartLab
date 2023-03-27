@@ -99,9 +99,26 @@ class ProfileFragment : Fragment() {
 
     private fun setObservers() {
         viewModel.patientCard.observe(viewLifecycleOwner) {
-            it?.let { patientCard: ProfileResponse ->
+            it?.let { patientCard: ProfileRequest ->
                 setPatientCardData(patientCard)
                 setEditors()
+            }
+        }
+
+        viewModel.imageFileName.observe(viewLifecycleOwner) { uri ->
+            editProfileBinding?.let {
+                if (uri.toString().isNotBlank()) {
+                    it.ivAvatar.setImageURI(uri)
+                }
+            }
+        }
+        viewModel.updatedProfile.observe(viewLifecycleOwner) { updatedProfile ->
+            editProfileBinding?.let {
+                updatedProfile.image?.let { image ->
+                    if (image.isNotBlank()) {
+                        Glide.with(requireContext()).load(image).into(it.ivAvatar)
+                    }
+                }
             }
         }
 
@@ -203,7 +220,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setPatientCardData(patientCard: ProfileResponse) {
+    private fun setPatientCardData(patientCard: ProfileRequest) {
         val binding = if (viewModel.isEditMode) editProfileBinding else createProfileBinding
         if (binding is FragmentProfileBinding) {
             with(editProfileBinding!!) {
@@ -340,7 +357,7 @@ class ProfileFragment : Fragment() {
             val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
             val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
             val file = File(dir, "image_${LocalTime.now().nano}.jpg")
-            viewModel.saveImageToPrefs(file.name)
+            viewModel.saveImageToPrefs(uri)
             val fo = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fo)
             fo.flush()
@@ -379,14 +396,9 @@ class ProfileFragment : Fragment() {
             showPhoto = false
         } else {
             viewModel.imageFileName.observe(viewLifecycleOwner) {
-                val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
-                val file = File(dir, it)
-                if (file.exists()) {
-                    FileInputStream(file).use {
-                        String(file.readBytes())
-                        Glide.with(requireContext())
-                            .load(file.toUri())
-                            .into(editProfileBinding!!.ivAvatar)
+                editProfileBinding?.let {
+                    if (uri.toString().isNotBlank()) {
+                        it.ivAvatar.setImageURI(uri)
                     }
                 }
             }

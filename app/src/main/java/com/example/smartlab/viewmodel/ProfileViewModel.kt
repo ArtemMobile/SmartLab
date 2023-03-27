@@ -1,8 +1,10 @@
 package com.example.smartlab.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import android.provider.ContactsContract.Data
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -21,13 +23,16 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
     private var token: String = ""
     private val TAG = this::class.java.simpleName
 
-    private val _patientCard = MutableLiveData<ProfileResponse?>()
+    private val _patientCard = MutableLiveData<ProfileRequest?>()
     val patientCard = _patientCard
 
-    private val _createProfileStatus = MutableLiveData<ProfileResponse>()
-    val createProfileStatus = _createProfileStatus
+    private val _createdProfile = MutableLiveData<ProfileResponse>()
+    val createdProfile = _createdProfile
 
-    private val _imageFileName = MutableLiveData<String>()
+    private val _updatedProfile = MutableLiveData<ProfileResponse>()
+    val updatedProfile = _updatedProfile
+
+    private val _imageFileName = MutableLiveData<Uri>()
     val imageFileName = _imageFileName
 
     private val _avatarError = MutableLiveData<String>()
@@ -53,15 +58,15 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
 
     fun getImageName(){
         viewModelScope.launch {
-            DataStore.getImage(app).collect {
-                _imageFileName.value = it
+            DataStore.getImageUri(app).collect {
+                _imageFileName.value = it.toUri()
             }
         }
     }
 
-    fun saveImageToPrefs(image: String){
+    fun saveImageToPrefs(image: Uri){
         viewModelScope.launch {
-            DataStore.saveImage(app, image).collect {
+            DataStore.saveImageUri(app, image.toString()).collect {
                 Log.d("IMAGE SAVED", "$it")
             }
         }
@@ -71,7 +76,7 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val response = SmartLabClient.retrofit.createProfile("Bearer $token", profile)
             if (response.isSuccessful) {
-                _createProfileStatus.value = response.body()
+                _createdProfile.value = response.body()
                 DataStore.savePatientCard(app, response.body()!!).collect{
                     Log.d("USER SAVED", "$it")
                 }
@@ -84,6 +89,7 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
             val response = SmartLabClient.retrofit.updateProfile("Bearer $token", profile)
             if (response.isSuccessful) {
                 Log.d(TAG, "updateProfile: success")
+                _updatedProfile.value = response.body()!!
                 DataStore.savePatientCard(app, response.body()!!).collect{
                     Log.d("USER UPDATED ", "$it")
                 }
@@ -101,6 +107,11 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
             if(!response.isSuccessful){
                 val errorResponse = Gson().fromJson(response.errorBody()?.string(), PhotoErrorResponse::class.java)
                 _avatarError.value = errorResponse.error.file[0]
+
+            } else{
+                _patientCard.value?.let {
+                    updateProfile(it)
+                }
             }
         }
     }

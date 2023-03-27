@@ -1,9 +1,11 @@
 package com.example.smartlab.utils
 
 import android.content.Context
+import android.net.Uri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.smartlab.model.api.callModels.ProfileRequest
 import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
@@ -59,9 +61,9 @@ object DataStore {
         return email
     }
 
-    fun getPatientCard(context: Context): Flow<ProfileResponse>{
+    fun getPatientCard(context: Context): Flow<ProfileRequest>{
         val user = context.dataStore.data.map {
-            Gson().fromJson(it[PROFILE] ?: "{}",  ProfileResponse::class.java)
+            Gson().fromJson(it[PROFILE] ?: "{}",  ProfileRequest::class.java)
         }
         return user
     }
@@ -75,16 +77,16 @@ object DataStore {
         }
     }
 
-    suspend fun saveImage(context: Context, fileName: String): Flow<SaveStatus> {
+    suspend fun saveImageUri(context: Context, imageUri: String): Flow<SaveStatus> {
         return flow {
             context.dataStore.edit {
-                it[PROFILE_IMAGE] = fileName
+                it[PROFILE_IMAGE] = imageUri
                 emit(SaveStatus.SUCCESS)
             }
         }
     }
 
-    fun getImage(context: Context): Flow<String>{
+    fun getImageUri(context: Context): Flow<String>{
         val imageFile = context.dataStore.data.map {
             it[PROFILE_IMAGE] ?: ""
         }
