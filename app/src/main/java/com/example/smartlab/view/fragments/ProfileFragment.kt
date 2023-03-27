@@ -104,6 +104,7 @@ class ProfileFragment : Fragment() {
                 setEditors()
             }
         }
+
     }
 
     private fun setListeners() {
@@ -335,18 +336,24 @@ class ProfileFragment : Fragment() {
     }
 
     private fun savePhoto(uri: Uri) {
-        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
-        val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
-        val file = File(dir, "image_${LocalTime.now().nano}.jpg")
-        viewModel.saveImageToPrefs(file.name)
-        val fo = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fo)
-        fo.flush()
-        fo.close()
-        editProfileBinding!!.ivAvatar.setImageBitmap(bitmap)
-        val requestFile = file.asRequestBody("file".toMediaTypeOrNull())
-        viewModel.updateAvatar(MultipartBody.Part.createFormData("file", file.name, requestFile))
-        showPhoto = false
+        if(viewModel.avatarError.value == null){
+            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+            val dir = requireContext().getDir("my_images", AppCompatActivity.MODE_PRIVATE)
+            val file = File(dir, "image_${LocalTime.now().nano}.jpg")
+            viewModel.saveImageToPrefs(file.name)
+            val fo = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fo)
+            fo.flush()
+            fo.close()
+            editProfileBinding!!.ivAvatar.setImageBitmap(bitmap)
+            val requestFile = file.asRequestBody("file".toMediaTypeOrNull())
+            viewModel.updateAvatar(MultipartBody.Part.createFormData("file", file.name, requestFile))
+            showPhoto = false
+        }
+
+        viewModel.avatarError.observe(viewLifecycleOwner){
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun capturePhoto() {

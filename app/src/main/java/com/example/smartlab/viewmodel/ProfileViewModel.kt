@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.model.api.callModels.ProfileRequest
+import com.example.smartlab.model.api.responseModels.PhotoErrorResponse
 import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.utils.DataStore
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
@@ -27,6 +29,9 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private val _imageFileName = MutableLiveData<String>()
     val imageFileName = _imageFileName
+
+    private val _avatarError = MutableLiveData<String>()
+    val avatarError = _avatarError
 
     var isEditMode = false
 
@@ -93,6 +98,10 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val response = SmartLabClient.retrofit.updateAvatar("Bearer $token", avatar)
             Log.d(TAG, "updateAvatar: ${response.code()}")
+            if(!response.isSuccessful){
+                val errorResponse = Gson().fromJson(response.errorBody()?.string(), PhotoErrorResponse::class.java)
+                _avatarError.value = errorResponse.error.file[0]
+            }
         }
     }
 }
