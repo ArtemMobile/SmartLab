@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.model.dto.CatalogItem
 import com.example.smartlab.model.dto.NewsItem
+import com.example.smartlab.model.room.SmartLabDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class AnalyzesViewModel(private val app: Application) : AndroidViewModel(app) {
@@ -21,9 +23,9 @@ class AnalyzesViewModel(private val app: Application) : AndroidViewModel(app) {
     private val _categories: MutableLiveData<List<String>> = MutableLiveData()
     val categories: LiveData<List<String>> = _categories
 
-
-//    private val _categories = MutableLiveData<List<String>>()
-//    val categories = _categories
+    private val db = SmartLabDatabase.getDb(app)
+    val dbCatalog: LiveData<List<CatalogItem>> = db.getDao().getAllAnalyzes()
+    var cartTotalPrice: MutableLiveData<Int> = MutableLiveData()
 
     fun getNews() {
         viewModelScope.launch {
@@ -49,6 +51,20 @@ class AnalyzesViewModel(private val app: Application) : AndroidViewModel(app) {
                     _categories.value = currentCategories.distinct()
                 }
             }
+        }
+    }
+
+    fun fillDatabase(items: List<CatalogItem>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            items.forEach {
+                db.getDao().addAnalyzeToCart(it)
+            }
+        }
+    }
+
+    fun updateCatalogItem(item: CatalogItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            db.getDao().updateAnalyze(item)
         }
     }
 }

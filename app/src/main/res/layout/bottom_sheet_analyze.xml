@@ -148,7 +148,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="17sp"
-            app:backgroundTint="@color/inactive_button"
+            app:backgroundTint="@color/blue_button"
             app:cornerRadius="10dp" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

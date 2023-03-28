@@ -1,13 +1,12 @@
 package com.example.smartlab.view.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,7 +18,6 @@ import com.example.smartlab.databinding.BottomSheetAnalyzeBinding
 import com.example.smartlab.databinding.CatalogChipBinding
 import com.example.smartlab.databinding.FragmentAnalyzesBinding
 import com.example.smartlab.model.dto.CatalogItem
-import com.example.smartlab.model.dto.NewsItem
 import com.example.smartlab.view.adapters.CatalogAdapter
 import com.example.smartlab.view.adapters.NewsAdapter
 import com.example.smartlab.view.adapters.SearchAdapter
@@ -39,59 +37,38 @@ class AnalyzesFragment : Fragment() {
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var categoriesList: List<String>
     private lateinit var catalogList: List<CatalogItem>
-    private lateinit var newsList: List<NewsItem>
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setListeners()
-        setUpObservers()
-        applyChips()
         initSwipeRefreshLayout()
+        initNewsRecyclerView()
+        initCatalogRecyclerView()
+        initSearchRecyclerView()
         viewModel.getNews()
         viewModel.getCatalog()
-
+        setObservers()
+        //applyChips()
     }
 
-    private fun setUpObservers() {
-        viewModel.news.observe(viewLifecycleOwner) {
-            with(binding.rvNews) {
-                newsList = it
-                initNewsRecycler()
-            }
-        }
-        viewModel.catalog.observe(viewLifecycleOwner) {
-            with(binding.rvCatalog) {
-                catalogList = it
-                initCatalogRecycler()
-                initSearchRecyclerView()
-            }
-        }
-        viewModel.categories.observe(viewLifecycleOwner) { categories ->
-            if (binding.chipGroup.isEmpty()) {
-                categoriesList = categories
-                categories.forEachIndexed { index, category ->
-                    val chip = CatalogChipBinding.inflate(layoutInflater).rootChip.apply {
-                        text = category
-                    }
-                    binding.chipGroup.addView(chip.apply { id = index })
-                }
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        binding.searchResultsContainer.visibility = View.GONE
     }
 
     private fun setListeners() {
-        binding.etSearch.setOnFocusChangeListener { v, hasFocus ->
+        binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 binding.tvCancel.visibility = View.VISIBLE
-                binding.mainContainer.visibility = View.GONE
+                binding.mainContainer.visibility = View.INVISIBLE
                 binding.searchResultsContainer.visibility = View.VISIBLE
                 binding.etSearch.addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -115,10 +92,87 @@ class AnalyzesFragment : Fragment() {
             }
         }
         binding.tvCancel.setOnClickListener {
-            binding.etSearch.clearFocus()
-            val imm =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+            binding.etSearch.apply {
+                clearFocus()
+                setText("")
+                binding.searchResultsContainer.visibility = View.GONE
+            }
+        }
+//        binding.btnGoToCart.setOnClickListener {
+//            findNavController().navigate(R.id.action_analyzesFragment_to_cartFragment)
+//        }
+    }
+
+//    private fun applyChips() {
+//        with(binding.chipGroup) {
+//            setOnCheckedStateChangeListener { _, checkedIds ->
+//                if (checkedIds.isNotEmpty()) {
+//                    filterList(checkedIds[0])
+//                } else {
+//                    catalogAdapter.updateItems(catalogList)
+//                }
+//            }
+//        }
+//    }
+
+//    private fun filterList(id: Int) {
+//        with(binding.rvCatalog) {
+//            catalogAdapter = CatalogAdapter(requireContext(),
+//                catalogList.filter { it.category == categoriesList.toList()[id] })
+//            adapter = catalogAdapter
+//        }
+//    }
+
+    private fun setObservers() {
+        viewModel.news.observe(viewLifecycleOwner) {
+            newsAdapter.updateItems(it)
+        }
+        viewModel.catalog.observe(viewLifecycleOwner) {
+            viewModel.dbCatalog.value?.let { catalogDb ->
+                if (catalogDb.isEmpty()) {
+                    viewModel.fillDatabase(it)
+                    catalogAdapter.updateItems(it)
+                }
+            }
+        }
+        viewModel.categories.observe(viewLifecycleOwner) { categories ->
+            if (binding.chipGroup.isEmpty()) {
+                categoriesList = categories
+                categories.forEachIndexed { index, category ->
+                    val chip = CatalogChipBinding.inflate(layoutInflater).rootChip.apply {
+                        text = category
+                    }
+                    binding.chipGroup.addView(chip.apply {
+                        id = index
+                    })
+                }
+            }
+        }
+        viewModel.dbCatalog.observe(viewLifecycleOwner) { dbCatalog ->
+            catalogList = dbCatalog
+            var cartItemPrice = 0
+            val cartItems = dbCatalog.filter { item -> item.isInCard }
+            cartItems.forEach {
+                cartItemPrice += it.price.trimEnd(' ', '₽').toInt()
+            }
+            viewModel.cartTotalPrice.value = cartItemPrice
+            catalogAdapter.updateItems(dbCatalog)
+        }
+        viewModel.cartTotalPrice.observe(viewLifecycleOwner) {
+            binding.goToBasketContainer.visibility = View.GONE
+            if (it > 0) {
+                binding.goToBasketContainer.visibility = View.VISIBLE
+                binding.tvCartPrice.text = "$it ₽"
+            }
+        }
+    }
+
+    private fun initNewsRecyclerView() {
+        newsAdapter = NewsAdapter(requireContext(), listOf())
+        binding.rvNews.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = newsAdapter
         }
     }
 
@@ -138,51 +192,33 @@ class AnalyzesFragment : Fragment() {
         analyzeDialog.show()
     }
 
-    private fun applyChips() {
-        with(binding.chipGroup) {
-            setOnCheckedStateChangeListener { _, checkedIds ->
-                if (checkedIds.isNotEmpty()) {
-                    filterList(checkedIds[0])
-                } else {
-                    initCatalogRecycler()
-                }
-            }
-        }
-    }
-
-    private fun filterList(id: Int) {
-        with(binding.rvCatalog) {
-            catalogAdapter = CatalogAdapter(requireContext(),
-                catalogList.filter { it.category == categoriesList.toList()[id] })
-            adapter = catalogAdapter
-        }
-    }
-
-    private fun initCatalogRecycler() {
-        with(binding.rvCatalog) {
-            catalogAdapter = CatalogAdapter(requireContext(), catalogList, onCardClickListener = {showAnalyzeDialog(it)})
-            adapter = catalogAdapter
-        }
-    }
-
-    private fun initNewsRecycler() {
-        with(binding.rvNews) {
-            newsAdapter = NewsAdapter(requireContext(), newsList)
-            adapter = newsAdapter
-        }
-    }
-
     private fun initSearchRecyclerView() {
-        searchAdapter = SearchAdapter(requireContext(), catalogList)
+        searchAdapter = SearchAdapter(requireContext(), listOf())
         binding.rvSearchResults.apply {
-            adapter = searchAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            adapter = searchAdapter
             addItemDecoration(
                 DividerItemDecoration(
                     requireContext(),
                     DividerItemDecoration.VERTICAL
                 )
             )
+        }
+    }
+
+    private fun initCatalogRecyclerView() {
+        catalogAdapter = CatalogAdapter(
+            requireContext(), listOf(),
+            onCardClickListener = {
+                showAnalyzeDialog(it)
+            },
+            onAddButtonClickListener = {
+                viewModel.updateCatalogItem(it.copy(isInCard = !it.isInCard))
+            }
+        )
+        binding.rvCatalog.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = catalogAdapter
         }
     }
 

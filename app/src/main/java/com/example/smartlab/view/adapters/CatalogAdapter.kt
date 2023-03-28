@@ -1,6 +1,8 @@
 package com.example.smartlab.view.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
@@ -14,7 +16,7 @@ class CatalogAdapter(
     private val context: Context,
     var catalog: List<CatalogItem>,
     var onAddButtonClickListener: (CatalogItem) -> Unit = {},
-    val onCardClickListener: (CatalogItem) -> Unit = {}
+    val onCardClickListener: (CatalogItem) -> Unit = {},
 ) : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() {
 
     class CatalogViewHolder(val binding: CatalogItemCardBinding) : RecyclerView.ViewHolder(binding.root)
@@ -29,8 +31,21 @@ class CatalogAdapter(
             tvName.text = catalogItem.name
             tvTimeResult.text = catalogItem.time_result
             tvPrice.text = "${catalogItem.price} ₽"
-            btnAdd.setOnClickListener {
-                onAddButtonClickListener(catalogItem)
+            with(btnAdd) {
+                setOnClickListener {
+                    onAddButtonClickListener(catalogItem)
+                }
+                if (catalogItem.isInCard) {
+                    text = "Убрать"
+                    setBackgroundColor(resources.getColor(R.color.white, null))
+                    setTextColor(resources.getColor(R.color.blue_button, null))
+                    setPadding(context.dpToPx(24.5), context.dpToPx(16.0), context.dpToPx(24.5), context.dpToPx(16.0))
+                    strokeWidth = 1
+                } else {
+                    text = "Добавить"
+                    setBackgroundColor(resources.getColor(R.color.blue_button, null))
+                    setTextColor(resources.getColor(R.color.white, null))
+                }
             }
             root.setOnClickListener {
                 onCardClickListener(catalogItem)
@@ -38,11 +53,15 @@ class CatalogAdapter(
         }
         if (position == catalog.lastIndex) {
             holder.binding.catalogItemRoot.updateLayoutParams<RecyclerView.LayoutParams> {
-                setMargins(context.dpToPx(10), context.dpToPx(20), 0, context.dpToPx(20))
+                setMargins(context.dpToPx(10.0), context.dpToPx(20.0), context.dpToPx(10.0), context.dpToPx(20.0))
             }
         }
+    }
 
-
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItems(catalog: List<CatalogItem>) {
+        this.catalog = catalog
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = catalog.size

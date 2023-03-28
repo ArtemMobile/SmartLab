@@ -4,12 +4,12 @@
     android:id="@+id/catalogItemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp"
     android:layout_marginHorizontal="10dp"
-    app:strokeColor="#F4F4F4"
-    app:strokeWidth="1dp"
     android:layout_marginTop="16dp"
-    app:contentPadding="16dp">
+    app:cardCornerRadius="12dp"
+    app:contentPadding="16dp"
+    app:strokeColor="#F4F4F4"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,8 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="2"
             android:fontFamily="@font/sf_pro_med"
+            android:maxLines="2"
             android:text="ПЦР-тест на определение РНК коронавируса стандартный"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -44,8 +44,8 @@
                     android:id="@+id/tvTimeResult"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/sf_pro_semi"
                     android:layout_marginBottom="4dp"
+                    android:fontFamily="@font/sf_pro_semi"
                     android:text="2 дня"
                     android:textColor="#939396"
                     android:textSize="14sp" />
@@ -54,8 +54,8 @@
                     android:id="@+id/tvPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1800 ₽"
                     android:fontFamily="@font/sf_pro_semi"
+                    android:text="1800 ₽"
                     android:textColor="@color/black"
                     android:textSize="17sp"
                     android:textStyle="bold" />
@@ -66,16 +66,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:paddingVertical="10dp"
+                android:fontFamily="@font/sf_pro_semi"
                 android:letterSpacing="0"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp"
                 android:stateListAnimator="@null"
                 android:text="Добавить"
-                android:fontFamily="@font/sf_pro_semi"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 app:backgroundTint="#1A6FEE"
-                app:cornerRadius="10dp" />
+                app:cornerRadius="10dp"
+                app:strokeColor="@color/blue_button" />
         </LinearLayout>
     </LinearLayout>
 

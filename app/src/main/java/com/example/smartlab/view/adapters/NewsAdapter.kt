@@ -1,5 +1,6 @@
 package com.example.smartlab.view.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -33,6 +34,12 @@ class NewsAdapter(private val context: Context, var news: List<NewsItem>) :
                 setMargins(0, 0, 0, 0)
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItems(news: List<NewsItem>){
+        this.news = news
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = news.size
