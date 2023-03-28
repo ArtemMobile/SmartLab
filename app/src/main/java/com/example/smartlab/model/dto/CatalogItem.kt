@@ -16,5 +16,6 @@ data class CatalogItem(
     val time_result: String,
     var isInCard: Boolean = false,
     var totalPrice: Int = 0,
-    var count: Int = 0
+    var count: Int = 0,
+    var patientCount: Int = 1
 )

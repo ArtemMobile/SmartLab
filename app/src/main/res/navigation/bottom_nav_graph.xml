@@ -9,7 +9,11 @@
         android:id="@+id/analyzesFragment"
         android:name="com.example.smartlab.view.fragments.AnalyzesFragment"
         android:label="fragment_analyzes"
-        tools:layout="@layout/fragment_analyzes" />
+        tools:layout="@layout/fragment_analyzes" >
+        <action
+            android:id="@+id/action_analyzesFragment_to_basketFragment"
+            app:destination="@id/basketFragment" />
+    </fragment>
     <fragment
         android:id="@+id/resultsFragment"
         android:name="com.example.smartlab.view.fragments.ResultsFragment"
@@ -25,4 +29,8 @@
         android:name="com.example.smartlab.view.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/basketFragment"
+        android:name="com.example.smartlab.view.fragments.BasketFragment"
+        android:label="BasketFragment" />
 </navigation>

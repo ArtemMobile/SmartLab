@@ -6,11 +6,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartlab.R
@@ -27,7 +27,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AnalyzesFragment : Fragment() {
-
     private val binding: FragmentAnalyzesBinding by lazy {
         FragmentAnalyzesBinding.inflate(layoutInflater)
     }
@@ -98,30 +97,30 @@ class AnalyzesFragment : Fragment() {
                 binding.searchResultsContainer.visibility = View.GONE
             }
         }
-//        binding.btnGoToCart.setOnClickListener {
-//            findNavController().navigate(R.id.action_analyzesFragment_to_cartFragment)
-//        }
+        binding.btnGoToBasket.setOnClickListener {
+            findNavController().navigate(R.id.action_analyzesFragment_to_basketFragment)
+        }
     }
 
-//    private fun applyChips() {
-//        with(binding.chipGroup) {
-//            setOnCheckedStateChangeListener { _, checkedIds ->
-//                if (checkedIds.isNotEmpty()) {
-//                    filterList(checkedIds[0])
-//                } else {
-//                    catalogAdapter.updateItems(catalogList)
-//                }
-//            }
-//        }
-//    }
+    private fun applyChips() {
+        with(binding.chipGroup) {
+            setOnCheckedStateChangeListener { _, checkedIds ->
+                if (checkedIds.isNotEmpty()) {
+                    filterList(checkedIds[0])
+                } else {
+                    catalogAdapter.updateItems(catalogList)
+                }
+            }
+        }
+    }
 
-//    private fun filterList(id: Int) {
-//        with(binding.rvCatalog) {
-//            catalogAdapter = CatalogAdapter(requireContext(),
-//                catalogList.filter { it.category == categoriesList.toList()[id] })
-//            adapter = catalogAdapter
-//        }
-//    }
+    private fun filterList(id: Int) {
+        with(binding.rvCatalog) {
+            catalogAdapter = CatalogAdapter(requireContext(),
+                catalogList.filter { it.category == categoriesList.toList()[id] })
+            adapter = catalogAdapter
+        }
+    }
 
     private fun setObservers() {
         viewModel.news.observe(viewLifecycleOwner) {
@@ -185,7 +184,7 @@ class AnalyzesFragment : Fragment() {
             tvPreparation.text = analyzeItem.preparation
             tvTimerResult.text = analyzeItem.time_result
             tvBio.text = analyzeItem.bio
-            btnAdd.text = "${analyzeItem.price} ₽"
+            btnAdd.text = "Добавить за ${analyzeItem.price} ₽"
             ivClose.setOnClickListener { analyzeDialog.cancel() }
         }
         analyzeDialog.setContentView(analyzeBinding.root)

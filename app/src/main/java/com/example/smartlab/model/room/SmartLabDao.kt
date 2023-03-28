@@ -4,15 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.smartlab.model.dto.CatalogItem
 
-
 @Dao
 interface SmartLabDao {
 
     @Query("select * from analyzes")
     fun getAllAnalyzes(): LiveData<List<CatalogItem>>
-
-    @Query("delete from analyzes")
-    fun clearAll()
 
     @Insert
     fun addAnalyzeToCart(item: CatalogItem)
