@@ -18,6 +18,7 @@ class App: Application() {
         isCreateProfilePassed = this.applicationContext.dataStore.data.map {
             it[DataStore.IS_CREATE_PATIENT_CARD_PASSED] ?: false
         }
+        DataStore.initEncryptedSharedPrefs(this)
     }
 }
 

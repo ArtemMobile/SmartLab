@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Корзина"
+                android:fontFamily="@font/sf_pro_bold"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold" />

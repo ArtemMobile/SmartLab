@@ -16,19 +16,15 @@ class CreatePatientCardViewModel(private val app: Application) : AndroidViewMode
     private val TAG = this::class.java.simpleName
     private var _profile = MutableLiveData<ProfileResponse>()
     val profile = _profile
-    private var _token = MutableLiveData<String>()
+    private var token: String = ""
 
     init {
-        viewModelScope.launch {
-            DataStore.getToken(app).collect {
-                _token.value = it
-            }
-        }
+        token = DataStore.decryptToken()
     }
 
     fun createProfile(profile: ProfileRequest) {
         viewModelScope.launch {
-            val response = SmartLabClient.retrofit.createProfile( "Bearer ${_token.value.toString()}", profile)
+            val response = SmartLabClient.retrofit.createProfile( "Bearer $token", profile)
             if (response.isSuccessful) {
                 _profile.value = response.body()
                 DataStore.savePatientCard(app, _profile.value!!).collect{

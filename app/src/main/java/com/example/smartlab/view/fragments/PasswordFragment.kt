@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentPasswordBinding
+import com.example.smartlab.utils.DataStore
 
 class PasswordFragment : Fragment() {
 
@@ -54,6 +55,7 @@ class PasswordFragment : Fragment() {
         }
         if(password.length == 4){
             // navigating next here + saving password securely
+            DataStore.encryptPassword(password)
             findNavController().navigate(R.id.action_passwordFragment_to_patientCardFragment)
             binding.tvPassword.text = "password created: $password"
         }

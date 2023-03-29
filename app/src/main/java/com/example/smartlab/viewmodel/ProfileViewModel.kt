@@ -42,9 +42,7 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch {
-            DataStore.getToken(app).collect {
-                token = it
-            }
+            token = DataStore.decryptToken()
         }
     }
 

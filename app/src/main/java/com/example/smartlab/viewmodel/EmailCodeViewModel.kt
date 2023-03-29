@@ -1,6 +1,7 @@
 package com.example.smartlab.viewmodel
 
 import android.app.Application
+import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -35,9 +36,8 @@ class EmailCodeViewModel(private val app: Application) : AndroidViewModel(app)  
             if (response.isSuccessful) {
                 response.body()?.let { tokenResponse ->
                     Log.d(TAG, "signIn: token: ${tokenResponse.token}")
-                    DataStore.saveToken(app, tokenResponse.token).collect { saveStatus ->
-                        _signInStatus.value = saveStatus
-                    }
+                    DataStore.encryptToken(tokenResponse.token)
+                    _signInStatus.value = SaveStatus.SUCCESS
                 }
             } else {
                 val error = Gson().fromJson(response.errorBody()?.string()?: "{}", ErrorResponse::class.java)

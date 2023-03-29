@@ -78,6 +78,4 @@ class BasketFragment : Fragment() {
             adapter = basketAdapter
         }
     }
-
-
 }
