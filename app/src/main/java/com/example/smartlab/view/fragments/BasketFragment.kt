@@ -45,6 +45,9 @@ class BasketFragment : Fragment() {
         binding.ivClearAll.setOnClickListener {
             viewModel.clearAll()
         }
+        binding.btnGoToOrder.setOnClickListener {
+            findNavController().navigate(R.id.action_basketFragment_to_orderFragment)
+        }
     }
 
     private fun setObservers() {

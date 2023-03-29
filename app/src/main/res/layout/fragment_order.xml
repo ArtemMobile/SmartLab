@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:overScrollMode="never"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="16dp">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:src="@drawable/back_button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/sf_pro_bold"
+            android:text="Оформление заказа"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/sf_pro_reg"
+            android:text="Адрес *"
+            android:textColor="#7E7E9A"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:hint="Введите ваш адрес"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/sf_pro_reg"
+            android:text="Дата и время*"
+            android:textColor="#7E7E9A"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:hint="Выберите дату и время"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Кто будет сдавать анализы?"
+                android:textColor="#7E7E9A" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" *"
+                android:textColor="#FD3535" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvWho"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="@dimen/margin1"
+            android:background="@drawable/single_digit_editor"
+            android:drawableEnd="@drawable/vector"
+            android:fontFamily="@font/sf_pro_reg"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddPatient"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            android:insetTop="0dp"
+
+            android:insetBottom="0dp"
+            android:text="Добавить еще пациента"
+            android:textAllCaps="false"
+            android:textColor="@color/blue_button"
+            android:textSize="15sp"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="10dp"
+            app:strokeColor="@color/blue_button"
+            app:strokeWidth="1dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:text="Телефон *"
+            android:textColor="#7E7E9A" />
+
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Комментарий"
+                android:textColor="#7E7E9A" />
+
+            <ImageView
+                android:id="@+id/ivMic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mic" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="match_parent"
+            android:layout_height="128dp"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:gravity="top"
+            android:hint="Можете оставить свои пожелания"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="#F5F5F9"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sf_pro_med"
+                android:paddingVertical="16dp"
+                android:text="Оплата Apple Pay"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:src="@drawable/right_arrow" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F5F5F9"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sf_pro_med"
+                android:paddingVertical="16dp"
+                android:text="Промокод"
+                android:textColor="#939396"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:src="@drawable/right_arrow" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F5F5F9"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvAnalyzeCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/sf_pro_med"
+                android:paddingVertical="16dp"
+                android:text="1 анализ"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:paddingVertical="16dp"
+                android:text="690 ₽"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F5F5F9">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOrder"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="32dp"
+                android:enabled="false"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:stateListAnimator="@null"
+                android:text="Заказать"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/inactive_button"
+                app:cornerRadius="10dp"
+                app:rippleColor="#33FFFFFF" />
+        </FrameLayout>
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
