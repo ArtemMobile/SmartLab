@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.fragments.CreatePatientCardFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:fontFamily="@font/sf_pro_bold"
+            android:text="@string/create_patient_card"
+            android:textColor="@color/black"
+            android:textSize="@dimen/normal_header_textsize"
+            app:layout_constraintEnd_toStartOf="@+id/tvSkip"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSkip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/sf_pro_reg"
+            android:gravity="end"
+            android:text="Пропустить"
+            android:textColor="#1A6FEE"
+            android:textSize="@dimen/normal_skip_textsize"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_start_end"
+        android:layout_marginTop="@dimen/margin2"
+        android:fontFamily="@font/sf_pro_reg"
+        android:text="Без карты пациента вы не сможете заказать анализы."
+        android:textColor="#939396"
+        android:textSize="@dimen/normal_description_textsize" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="@dimen/margin3"
+        android:fontFamily="@font/sf_pro_reg"
+        android:text="@string/analysis_results"
+        android:textColor="#939396"
+        android:textSize="@dimen/normal_description_textsize" />
+
+    <LinearLayout
+        android:id="@+id/editor_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="@dimen/margin1"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:hint="Имя"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <EditText
+            android:id="@+id/etPatronymic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="@dimen/normal_editor_margin"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:hint="Отчество"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <EditText
+            android:id="@+id/etLastname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="@dimen/normal_editor_margin"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:hint="Фамилия"
+            android:inputType="text"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+        <TextView
+            android:id="@+id/etBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_start_end"
+            android:layout_marginTop="@dimen/normal_editor_margin"
+            android:background="@drawable/single_digit_editor"
+            android:fontFamily="@font/sf_pro_reg"
+            android:hint="Дата рождения"
+            android:padding="@dimen/normal_editor_padding"
+            android:textColor="@color/black"
+            android:textColorHint="#939396"
+            android:textSize="@dimen/normal_editor_textsize" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/etGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_start_end"
+        android:layout_marginTop="@dimen/normal_editor_margin"
+        android:background="@drawable/single_digit_editor"
+        android:fontFamily="@font/sf_pro_reg"
+        android:hint="Пол"
+        android:padding="@dimen/normal_editor_padding"
+        android:textColor="@color/black"
+        android:textColorHint="#939396"
+        android:textSize="@dimen/normal_editor_textsize"
+        app:drawableRightCompat="@drawable/vector" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCreateCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_start_end"
+        android:layout_marginTop="@dimen/margin4"
+        android:backgroundTint="@color/inactive_button"
+        android:fontFamily="@font/sf_pro_semi"
+        android:enabled="false"
+        android:letterSpacing="0"
+        android:paddingVertical="@dimen/normal_button_padding"
+        android:stateListAnimator="@null"
+        android:text="Создать"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/normal_button_textsize"
+        app:cornerRadius="@dimen/normal_button_radius" />
+
+</LinearLayout>

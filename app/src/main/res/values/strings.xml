@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">SmartLab</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello">Добро пожаловать!</string>
+    <string name="login_text">Войдите, чтобы пользоваться функциями\nприложения</string>
+    <string name="create_patient_card">Создание карты пациента</string>
+    <string name="analysis_results">В картах пациентов будут храниться результаты анализов вас и ваших близких.</string>
+    <string-array name="genders">
+        <item>Мужской</item>
+        <item>Женский</item>
+    </string-array>
+</resources>
