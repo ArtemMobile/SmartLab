@@ -6,6 +6,7 @@
     <string name="login_text">Войдите, чтобы пользоваться функциями\nприложения</string>
     <string name="create_patient_card">Создание карты пациента</string>
     <string name="analysis_results">В картах пациентов будут храниться результаты анализов вас и ваших близких.</string>
+    <string name="who_will_pass">Кто будет сдавать анализы?<font color="#FD3535"> *</font></string>
     <string-array name="genders">
         <item>Мужской</item>
         <item>Женский</item>

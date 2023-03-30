@@ -75,12 +75,14 @@ class AnalyzesFragment : Fragment() {
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
                     override fun afterTextChanged(s: Editable?) {
-                        viewModel.catalog.value?.let {
-                            binding.searchResultsContainer.visibility = View.VISIBLE
-                            val searchItems = it.filter { catalogItem ->
-                                catalogItem.name.lowercase().contains(s.toString().lowercase())
+                        if(s.toString().length >= 3){
+                            viewModel.catalog.value?.let {
+                                binding.searchResultsContainer.visibility = View.VISIBLE
+                                val searchItems = it.filter { catalogItem ->
+                                    catalogItem.name.lowercase().contains(s.toString().lowercase())
+                                }
+                                searchAdapter.updateItems(searchItems)
                             }
-                            searchAdapter.updateItems(searchItems)
                         }
                     }
                 })
@@ -158,7 +160,7 @@ class AnalyzesFragment : Fragment() {
             catalogAdapter.updateItems(dbCatalog)
         }
         viewModel.cartTotalPrice.observe(viewLifecycleOwner) {
-            binding.goToBasketContainer.visibility = View.INVISIBLE
+            binding.goToBasketContainer.visibility = View.GONE
             if (it > 0) {
                 binding.goToBasketContainer.visibility = View.VISIBLE
                 binding.tvCartPrice.text = "$it ₽"

@@ -13,6 +13,7 @@
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/white</item>
+
         <!-- Customize your theme here. -->
     </style>
 
@@ -57,5 +58,17 @@
 
     <style name="DatePickerButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/blue_button</item>
+    </style>
+
+    <style name="MyEditor" parent="Widget.AppCompat.EditText">
+        <item name="android:fontFamily">@font/sf_pro_reg</item>
+        <item name="android:background">@drawable/single_digit_editor</item>
+        <item name="marginHorizontal">20dp</item>
+        <item name="android:textColorHint">#939396</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="maxLines">1</item>
+        <item name="android:inputType">text</item>
     </style>
 </resources>
