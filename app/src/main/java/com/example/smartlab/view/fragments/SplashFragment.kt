@@ -35,13 +35,20 @@ class SplashFragment : Fragment() {
                     findNavController().navigate(R.id.action_splashFragment_to_mainActivity)
                     requireActivity().finish()
                 } else {
-                    (requireContext().applicationContext.applicationContext as App).isOnboardingPassedFlow.collect { isOnboardingPassed ->
-                        if (isOnboardingPassed) {
-                            findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+                    (requireContext().applicationContext.applicationContext as App).isCreatePasswordPassed.collect { isPasswordCreated ->
+                        if (!isPasswordCreated) {
+                            findNavController().navigate(R.id.action_splashFragment_to_passwordFragment)
                         } else {
-                            findNavController().navigate(R.id.action_splashFragment_to_onboardingFragment)
+                            (requireContext().applicationContext.applicationContext as App).isOnboardingPassedFlow.collect { isOnboardingPassed ->
+                                if (isOnboardingPassed) {
+                                    findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+                                } else {
+                                    findNavController().navigate(R.id.action_splashFragment_to_onboardingFragment)
+                                }
+                            }
                         }
                     }
+
                 }
             }
         }

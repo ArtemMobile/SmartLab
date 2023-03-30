@@ -32,17 +32,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="7dp"
-                app:cardCornerRadius="60dp"
+                app:cardCornerRadius="74dp"
                 app:cardElevation="0dp">
 
                 <ImageView
                     android:id="@+id/ivAvatar"
                     android:layout_width="148dp"
-                    android:layout_height="123dp"
+                    android:layout_height="148dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/photo_placeholder" />
             </androidx.cardview.widget.CardView>
 
+<!--            <ProgressBar-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:indeterminateDrawable="@drawable/progressbar"/>-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,6 +70,7 @@
             android:id="@+id/mainContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:orientation="vertical">
 
             <EditText
@@ -72,7 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="32dp"
                 android:background="@drawable/single_digit_editor"
                 android:fontFamily="@font/sf_pro_reg"
                 android:hint="Имя"
@@ -144,7 +149,6 @@
             android:textSize="15sp"
             app:drawableEndCompat="@drawable/vector" />
 
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSavePatientCard"
             android:layout_width="match_parent"
@@ -163,6 +167,5 @@
             app:cornerRadius="10dp" />
 
     </LinearLayout>
-
 
 </ScrollView>

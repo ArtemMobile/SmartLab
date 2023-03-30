@@ -91,7 +91,6 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
                 DataStore.savePatientCard(app, response.body()!!).collect{
                     Log.d("USER UPDATED ", "$it")
                 }
-
             } else {
                 Log.d(TAG, "updateProfile: error ${response.message()}")
             }
@@ -105,7 +104,6 @@ class ProfileViewModel(private val app: Application) : AndroidViewModel(app) {
             if(!response.isSuccessful){
                 val errorResponse = Gson().fromJson(response.errorBody()?.string(), PhotoErrorResponse::class.java)
                 _avatarError.value = errorResponse.error.file[0]
-
             } else{
                 _patientCard.value?.let {
                     updateProfile(it)

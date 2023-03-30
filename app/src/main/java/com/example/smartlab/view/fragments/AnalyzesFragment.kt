@@ -158,7 +158,7 @@ class AnalyzesFragment : Fragment() {
             catalogAdapter.updateItems(dbCatalog)
         }
         viewModel.cartTotalPrice.observe(viewLifecycleOwner) {
-            binding.goToBasketContainer.visibility = View.GONE
+            binding.goToBasketContainer.visibility = View.INVISIBLE
             if (it > 0) {
                 binding.goToBasketContainer.visibility = View.VISIBLE
                 binding.tvCartPrice.text = "$it ₽"
@@ -184,7 +184,13 @@ class AnalyzesFragment : Fragment() {
             tvPreparation.text = analyzeItem.preparation
             tvTimerResult.text = analyzeItem.time_result
             tvBio.text = analyzeItem.bio
-            btnAdd.text = "Добавить за ${analyzeItem.price} ₽"
+            btnAdd.apply {
+                text = "Добавить за ${analyzeItem.price} ₽"
+                setOnClickListener{
+                    viewModel.updateCatalogItem(analyzeItem.copy(isInCard = !analyzeItem.isInCard))
+                    analyzeDialog.cancel()
+                }
+            }
             ivClose.setOnClickListener { analyzeDialog.cancel() }
         }
         analyzeDialog.setContentView(analyzeBinding.root)

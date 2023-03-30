@@ -24,6 +24,7 @@ object DataStore {
     val PROFILE = stringPreferencesKey("profile")
     val PROFILE_IMAGE = stringPreferencesKey("profile_image")
     val IS_CREATE_PATIENT_CARD_PASSED = booleanPreferencesKey("isCreatePatientCardPassed")
+    val IS_CREATE_PASSWORD_PASSED = booleanPreferencesKey("isCreatePasswordPassed")
 
     fun initEncryptedSharedPrefs(context: Context) {
         masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
@@ -88,6 +89,15 @@ object DataStore {
         return flow {
             context.dataStore.edit {
                 it[IS_CREATE_PATIENT_CARD_PASSED] = true
+                emit(SaveStatus.SUCCESS)
+            }
+        }
+    }
+
+    fun savePasswordCreated(context: Context): Flow<SaveStatus> {
+        return flow {
+            context.dataStore.edit {
+                it[IS_CREATE_PASSWORD_PASSED] = true
                 emit(SaveStatus.SUCCESS)
             }
         }

@@ -17,9 +17,9 @@ class BasketAdapter(
     val onMinusClickListener: (CatalogItem) -> Unit = {},
     val onPlusClickListener: (CatalogItem) -> Unit = {},
     val onDeleteClickListener: (CatalogItem) -> Unit = {},
-) : RecyclerView.Adapter<BasketAdapter.NewsViewHolder>() {
+) : RecyclerView.Adapter<BasketAdapter.BasketViewHolder>() {
 
-    class NewsViewHolder(val binding: BasketCardBinding) : RecyclerView.ViewHolder(binding.root)
+    class BasketViewHolder(val binding: BasketCardBinding) : RecyclerView.ViewHolder(binding.root)
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateItems(items: List<CatalogItem>) {
@@ -27,10 +27,10 @@ class BasketAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder =
-        NewsViewHolder(BasketCardBinding.inflate(LayoutInflater.from(context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BasketViewHolder =
+        BasketViewHolder(BasketCardBinding.inflate(LayoutInflater.from(context), parent, false))
 
-    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BasketViewHolder, position: Int) {
         val item = items[position]
         with(holder.binding) {
             tvTitle.text = item.name

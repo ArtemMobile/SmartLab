@@ -21,7 +21,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.view.iterator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -30,13 +29,11 @@ import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentCreatePatientCardBinding
 import com.example.smartlab.databinding.FragmentProfileBinding
 import com.example.smartlab.model.api.callModels.ProfileRequest
-import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.viewmodel.ProfileViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.LocalTime

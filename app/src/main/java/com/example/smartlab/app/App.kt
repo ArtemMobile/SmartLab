@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 class App: Application() {
     lateinit var isOnboardingPassedFlow: Flow<Boolean>
     lateinit var isCreateProfilePassed: Flow<Boolean>
+    lateinit var isCreatePasswordPassed: Flow<Boolean>
 
     override fun onCreate() {
         super.onCreate()
@@ -17,6 +18,9 @@ class App: Application() {
         }
         isCreateProfilePassed = this.applicationContext.dataStore.data.map {
             it[DataStore.IS_CREATE_PATIENT_CARD_PASSED] ?: false
+        }
+        isCreatePasswordPassed = this.applicationContext.dataStore.data.map {
+            it[DataStore.IS_CREATE_PASSWORD_PASSED] ?: false
         }
         DataStore.initEncryptedSharedPrefs(this)
     }
