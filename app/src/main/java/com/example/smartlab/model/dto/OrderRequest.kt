@@ -1,6 +1,6 @@
 package com.example.smartlab.model.dto
 
-data class Order(
+data class OrderRequest(
     val address: String,
     val date_time: String,
     val phone: String,

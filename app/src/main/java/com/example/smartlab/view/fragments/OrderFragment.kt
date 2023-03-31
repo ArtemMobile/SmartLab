@@ -24,6 +24,7 @@ import com.example.smartlab.R
 import com.example.smartlab.databinding.AddressBottomSheetBinding
 import com.example.smartlab.databinding.DateTimeBottomSheetBinding
 import com.example.smartlab.databinding.FragmentOrderBinding
+import com.example.smartlab.model.dto.OrderRequest
 import com.example.smartlab.viewmodel.OrderViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -179,6 +180,18 @@ class OrderFragment : Fragment() {
         binding.tvDate.setOnClickListener {
             showSelectTimeBottomSheetDialog()
         }
+        binding.btnOrder.setOnClickListener {
+            viewModel.order(
+                OrderRequest(
+                    "test",
+                    "test",
+                    "test",
+                    "test",
+                    "test",
+                    listOf()
+                )
+            )
+        }
     }
 
     private fun setObservers() {
@@ -188,6 +201,18 @@ class OrderFragment : Fragment() {
     }
 
     private fun updateDateTime() {
+        val prefix = if (calendar.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance()
+                .get(Calendar.DAY_OF_MONTH)
+        ) {
+            "Сегодня, "
+        } else if (calendar.get(Calendar.DAY_OF_MONTH) == Calendar.getInstance()
+                .apply { add(Calendar.DAY_OF_MONTH, 1) }
+                .get(Calendar.DAY_OF_MONTH)
+        ) {
+            "Завтра, "
+        } else {
+            ""
+        }
         val myFormat =
             if (calendar.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)) {
                 "dd MMMM"
@@ -196,7 +221,7 @@ class OrderFragment : Fragment() {
             }
         val sdf = SimpleDateFormat(myFormat, Locale("ru"))
         selectTimeDialogBinding?.let {
-            it.tvDateTime.text = sdf.format(calendar.time)
+            it.tvDateTime.text = prefix + sdf.format(calendar.time)
         }
     }
 
@@ -256,7 +281,7 @@ class OrderFragment : Fragment() {
             val checkedChip =
                 selectTimeDialogBinding!!.group.findViewById<Chip>(selectTimeDialogBinding!!.group.checkedChipId)
             binding.tvDate.text =
-                "$prefix ${selectTimeDialogBinding!!.tvDateTime.text} ${checkedChip.text}"
+                "${selectTimeDialogBinding!!.tvDateTime.text} ${checkedChip.text}"
             selectTimeDialog.cancel()
         }
         selectTimeDialogBinding!!.tvDateTime.setOnClickListener {

@@ -35,6 +35,12 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="timeChip" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/sf_pro_reg</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="BottomNavigationViewTextStyle" parent="Widget.Design.BottomNavigationView">
         <item name="android:fontFamily">@font/sf_pro_reg</item>
         <item name="android:textSize">12sp</item>

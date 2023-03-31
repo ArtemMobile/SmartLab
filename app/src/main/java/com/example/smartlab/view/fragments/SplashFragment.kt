@@ -11,6 +11,7 @@ import com.example.smartlab.R
 import com.example.smartlab.app.App
 import com.example.smartlab.databinding.FragmentSplashBinding
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class SplashFragment : Fragment() {
@@ -30,25 +31,29 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
             delay(1500)
-            (requireContext().applicationContext.applicationContext as App).isCreateProfilePassed.collect { isCreatePatientCardPassed ->
-                if (isCreatePatientCardPassed) {
-                    findNavController().navigate(R.id.action_splashFragment_to_mainActivity)
-                    requireActivity().finish()
-                } else {
-                    (requireContext().applicationContext.applicationContext as App).isCreatePasswordPassed.collect { isPasswordCreated ->
-                        if (!isPasswordCreated) {
-                            findNavController().navigate(R.id.action_splashFragment_to_passwordFragment)
-                        } else {
-                            (requireContext().applicationContext.applicationContext as App).isOnboardingPassedFlow.collect { isOnboardingPassed ->
-                                if (isOnboardingPassed) {
-                                    findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+            (requireContext().applicationContext.applicationContext as App).isOnboardingPassedFlow.collect { isOnboardingPassed ->
+                if (isOnboardingPassed) {
+                    (requireContext().applicationContext.applicationContext as App).isLoginPassed.collect { isLoginPassed ->
+                        if (isLoginPassed) {
+                            (requireContext().applicationContext.applicationContext as App).isCreatePasswordPassed.collect { isCreatePasswordPassed ->
+                                if (isCreatePasswordPassed) {
+                                    (requireContext().applicationContext.applicationContext as App).isCreateProfilePassed.collect { isCreatePatientCardPassed ->
+                                        if(isCreatePatientCardPassed){
+                                            findNavController().navigate(R.id.action_splashFragment_to_mainActivity)
+                                        } else{
+                                            findNavController().navigate(R.id.action_splashFragment_to_patientCardFragment)
+                                        }
+                                    }
                                 } else {
-                                    findNavController().navigate(R.id.action_splashFragment_to_onboardingFragment)
+                                    findNavController().navigate(R.id.action_splashFragment_to_passwordFragment)
                                 }
                             }
+                        } else {
+                            findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
                         }
                     }
-
+                } else {
+                    findNavController().navigate(R.id.action_splashFragment_to_onboardingFragment)
                 }
             }
         }

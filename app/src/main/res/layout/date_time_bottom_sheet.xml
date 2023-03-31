@@ -63,6 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+
         app:chipSpacingHorizontal="16dp"
         app:chipSpacingVertical="16dp"
         app:singleSelection="true">
@@ -71,60 +72,76 @@
             android:id="@+id/chip10"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:checked="true"
-            android:text="10:00" />
+            android:paddingVertical="10dp"
+            android:text="10:00"
+            android:textAppearance="@style/timeChip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip13"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="13:00" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="13:00"
+            android:textAppearance="@style/timeChip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip14"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="14:00" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="14:00"
+            android:textAppearance="@style/timeChip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip15"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="15:00" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="15:00"
+            android:textAppearance="@style/timeChip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip16"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="16:00" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="16:00"
+            android:textAppearance="@style/timeChip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip18"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="18:00" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="18:00"
+            android:textAppearance="@style/timeChip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip19"
             style="@style/DefaultChipStyle"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="19:00" />
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp"
+            android:text="19:00"
+            android:textAppearance="@style/timeChip" />
     </com.google.android.material.chip.ChipGroup>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConfirm"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
+        android:fontFamily="@font/sf_pro_semi"
         android:insetTop="0dp"
         android:insetBottom="0dp"
+        android:letterSpacing="0"
         android:text="Подтвердить"
         android:textAllCaps="false"
         android:textSize="17sp"

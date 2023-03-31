@@ -1,16 +1,22 @@
 package com.example.smartlab.view.fragments
 
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.iterator
+import androidx.datastore.preferences.core.edit
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.smartlab.R
 import com.example.smartlab.databinding.FragmentPasswordBinding
 import com.example.smartlab.utils.DataStore
+import com.example.smartlab.utils.dataStore
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class PasswordFragment : Fragment() {
 
@@ -42,20 +48,23 @@ class PasswordFragment : Fragment() {
                 }
             }
             btnClear.setOnClickListener { clearOneDigit() }
-            tvSkip.setOnClickListener { findNavController().navigate(R.id.action_passwordFragment_to_patientCardFragment) }
+            tvSkip.setOnClickListener {
+                findNavController().navigate(R.id.action_passwordFragment_to_patientCardFragment)
+                savePasswordPassed()
+            }
         }
     }
 
     private fun setPassword(button: View) {
-        applyDots()
         if (password.length < 4) {
             password += (button as AppCompatButton).text
+            applyDots()
             // just to display current password
         }
         if (password.length == 4) {
             // navigating next here + saving password securely
+            savePasswordPassed()
             DataStore.encryptPassword(password)
-            DataStore.savePasswordCreated(requireContext())
             findNavController().navigate(R.id.action_passwordFragment_to_patientCardFragment)
         }
     }
@@ -65,6 +74,12 @@ class PasswordFragment : Fragment() {
             password = password.dropLast(1)
             applyDots()
             // just to prove that last digit is getting deleted
+        }
+    }
+
+    private  fun savePasswordPassed(){
+        lifecycleScope.launch {
+            DataStore.savePasswordPassed(requireContext()).collect {}
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.smartlab.viewmodel
 import android.app.Application
 import android.provider.ContactsContract.Data
 import android.util.Log
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +13,9 @@ import com.example.smartlab.model.api.SmartLabClient
 import com.example.smartlab.model.api.responseModels.ErrorResponse
 import com.example.smartlab.utils.DataStore
 import com.example.smartlab.utils.SendCodeStatus
+import com.example.smartlab.utils.dataStore
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class EmailCodeViewModel(private val app: Application) : AndroidViewModel(app)  {
@@ -37,6 +40,9 @@ class EmailCodeViewModel(private val app: Application) : AndroidViewModel(app)  
                 response.body()?.let { tokenResponse ->
                     Log.d(TAG, "signIn: token: ${tokenResponse.token}")
                     DataStore.encryptToken(tokenResponse.token)
+                    app.dataStore.edit {
+                        it[DataStore.IS_LOGIN_PASSED] = true
+                    }
                     _signInStatus.value = SaveStatus.SUCCESS
                 }
             } else {

@@ -52,7 +52,6 @@ class ProfileFragment : Fragment() {
             try {
                 if (res.resultCode == RESULT_OK)
                     savePhoto(uri)
-
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "can't", Toast.LENGTH_SHORT).show()
             }
