@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet_shape"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Дата и время"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close_ic" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Выберите дату"
+        android:textColor="#939396"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDateTime"
+        style="@style/MyEditor"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:drawableEnd="@drawable/vector"
+        android:focusable="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Выберите время"
+        android:textColor="#939396"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:chipSpacingHorizontal="16dp"
+        app:chipSpacingVertical="16dp"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip10"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:checked="true"
+            android:text="10:00" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip13"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="13:00" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip14"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="14:00" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip15"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="15:00" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip16"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="16:00" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip18"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="18:00" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip19"
+            style="@style/DefaultChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="19:00" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="48dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="Подтвердить"
+        android:textAllCaps="false"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/blue_button"
+        app:cornerRadius="10dp" />
+</LinearLayout>

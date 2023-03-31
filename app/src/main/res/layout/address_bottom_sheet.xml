@@ -281,7 +281,7 @@
             android:id="@+id/switchSaveAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
+            android:checked="false"
             app:thumbTint="@color/white"
             app:trackTint="@color/custom_track" />
     </LinearLayout>

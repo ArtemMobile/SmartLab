@@ -5,6 +5,8 @@ import com.example.smartlab.model.api.responseModels.ProfileResponse
 import com.example.smartlab.model.api.responseModels.TokenResponse
 import com.example.smartlab.model.dto.CatalogItem
 import com.example.smartlab.model.dto.NewsItem
+import com.example.smartlab.model.dto.Order
+import com.example.smartlab.model.dto.OrderId
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -44,4 +46,7 @@ interface SmartLabService {
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part
     ): Response<Unit>
+
+    @POST("api/order")
+    suspend fun order(@Body order: Order): Response<OrderId>
 }
