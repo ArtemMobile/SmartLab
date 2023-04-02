@@ -4,21 +4,23 @@
     android:id="@+id/newsRoot"
     android:layout_width="270dp"
     android:layout_height="152dp"
+    android:layout_marginStart="16dp"
     android:layout_marginRight="16dp"
-    app:cardBackgroundColor="@color/teal_200"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
+        android:background="@drawable/grad"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
+            android:layout_marginStart="16dp"
+
             android:layout_weight="1"
             android:layout_marginTop="16dp"
             android:orientation="vertical">

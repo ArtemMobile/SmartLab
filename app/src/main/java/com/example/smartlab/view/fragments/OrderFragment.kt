@@ -195,8 +195,11 @@ class OrderFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.reversedGeocoding.observe(viewLifecycleOwner) { reversedGeocoging ->
-            selectAddressDialogBinding?.etAddress?.setText("${reversedGeocoging.features[0].properties.address.road} ${reversedGeocoging.features[0].properties.address.house_number}")
+        viewModel.reversedGeocoding.observe(viewLifecycleOwner) { reversedGeocoding ->
+            selectAddressDialogBinding?.etAddress?.setText("${reversedGeocoding.features[0].properties.address.road} ${reversedGeocoding.features[0].properties.address.house_number}")
+        }
+        viewModel.orderResponse.observe(viewLifecycleOwner){
+            findNavController().navigate(R.id.action_orderFragment_to_waitingFragment)
         }
     }
 

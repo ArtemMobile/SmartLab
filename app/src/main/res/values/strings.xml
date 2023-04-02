@@ -11,4 +11,5 @@
         <item>Мужской</item>
         <item>Женский</item>
     </string-array>
+    <string name="rules">Не забудьте ознакомиться с</string>
 </resources>
